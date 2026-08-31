@@ -7,3 +7,5 @@ recovery-codes.txt
 *password*.txt
 node_modules/
 .DS_Store
+Workflow-v1.0/
+Workflow-v1.1*/

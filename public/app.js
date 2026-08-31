@@ -41,6 +41,10 @@ const elements = {
   rebMenu: $("rebMenu"),
   rebMenuButton: $("rebMenuButton"),
   rebMenuList: $("rebMenuList"),
+  assetModal: $("assetModal"),
+  assetForm: $("assetForm"),
+  cancelAssetButton: $("cancelAssetButton"),
+  assetModalMessage: $("assetModalMessage"),
   authMessage: $("authMessage"),
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
@@ -197,7 +201,7 @@ async function loadRecords() {
 }
 
 async function loadAssets() {
-  const { data, error } = await db.from("workflow_assets").select("id, name").order("name");
+  const { data, error } = await db.from("workflow_assets").select("id, name, type, variant").order("name");
 
   if (error) {
     setMessage(elements.formMessage, error.message, true);
@@ -546,17 +550,41 @@ elements.logoutButton.addEventListener("click", async () => {
 elements.entryForm.addEventListener("submit", saveRecord);
 elements.resetFormButton.addEventListener("click", resetForm);
 
-elements.addAssetButton.addEventListener("click", async () => {
-  const input = window.prompt("Назва нового засобу:");
-  const name = input?.trim();
-  if (!name) return;
+function openAssetModal() {
+  $("assetName").value = "";
+  $("assetType").value = "";
+  $("assetVariant").value = "";
+  setMessage(elements.assetModalMessage, "");
+  elements.assetModal.hidden = false;
+  $("assetName").focus();
+}
 
-  const { error } = await db.from("workflow_assets").insert({ name, created_by: state.user.id });
+function closeAssetModal() {
+  elements.assetModal.hidden = true;
+}
+
+elements.addAssetButton.addEventListener("click", openAssetModal);
+elements.cancelAssetButton.addEventListener("click", closeAssetModal);
+
+elements.assetModal.addEventListener("click", (event) => {
+  if (event.target === elements.assetModal) closeAssetModal();
+});
+
+elements.assetForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const name = $("assetName").value.trim();
+  if (!name) return;
+  const type = $("assetType").value || null;
+  const variant = $("assetVariant").value || null;
+
+  const { error } = await db.from("workflow_assets").insert({ name, type, variant, created_by: state.user.id });
   if (error) {
-    setMessage(elements.formMessage, error.message, true);
+    setMessage(elements.assetModalMessage, error.message, true);
     return;
   }
 
+  closeAssetModal();
   await loadAssets();
   elements.assetSelect.value = name;
   updateAssetTitle();
@@ -602,7 +630,10 @@ elements.rebMenuButton.addEventListener("click", (event) => {
 });
 
 elements.rebMenuList.addEventListener("click", (event) => {
-  if (event.target.closest(".nav-menu-item")) closeRebMenu();
+  const item = event.target.closest(".nav-menu-item");
+  if (!item) return;
+  closeRebMenu();
+  if (item.dataset.category === "far") window.location.href = "./reb-far.html";
 });
 
 document.addEventListener("click", (event) => {
@@ -612,7 +643,10 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeRebMenu();
+  if (event.key === "Escape") {
+    closeRebMenu();
+    closeAssetModal();
+  }
 });
 
 [elements.searchInput, elements.actionFilter, elements.fromDate, elements.toDate].forEach((element) => {

@@ -620,6 +620,68 @@ tbody tr:hover td {
   background: rgba(214, 166, 58, 0.1);
 }
 
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.status-pill.ready {
+  color: var(--green);
+  background: rgba(127, 163, 106, 0.1);
+}
+
+.status-pill.not_ready {
+  color: var(--muted);
+  background: rgba(174, 182, 157, 0.08);
+}
+
+.status-pill.repair {
+  color: var(--amber);
+  background: rgba(214, 166, 58, 0.1);
+}
+
+.status-pill.destroyed {
+  color: var(--red);
+  background: rgba(188, 90, 72, 0.1);
+}
+
+.breadcrumb-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+  color: var(--khaki);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(9, 11, 8, 0.72);
+}
+
+.modal-panel {
+  width: min(420px, 100%);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .row-actions {
   display: flex;
   gap: 6px;
