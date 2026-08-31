@@ -16,11 +16,11 @@ update public.profiles set role = 'admin' where email = 'your@email.com';
 
 Якщо ви вже увійшли в застосунок, після зміни ролі в Supabase вийдіть і зайдіть знову.
 
-6. Вставте project URL та anon key у `supabase-config.js`.
+6. Скопіюйте `public/supabase-config.example.js` у `public/supabase-config.js` і вставте туди project URL та anon key.
 
 ## Запуск
 
-Відкрийте `index.html` у браузері. Якщо браузер блокує CDN або запити з локального файлу, запустіть простий локальний сервер з цієї папки.
+Відкрийте `public/index.html` у браузері. Якщо браузер блокує CDN або запити з локального файлу, запустіть простий локальний сервер з цієї папки.
 
 ```powershell
 node server.js

@@ -15,5 +15,5 @@ const content = `window.WORKFLOW_SUPABASE = {
 };
 `;
 
-fs.writeFileSync(path.join(__dirname, "..", "supabase-config.js"), content);
+fs.writeFileSync(path.join(__dirname, "..", "public", "supabase-config.js"), content);
 console.log("supabase-config.js generated.");
