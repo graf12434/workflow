@@ -1,0 +1,9 @@
+supabase-config.js
+recovery-codes.txt
+*.env
+*.local
+*Пас*.txt
+*pass*.txt
+*password*.txt
+node_modules/
+.DS_Store

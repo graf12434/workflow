@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workflow</title>
+    <link rel="stylesheet" href="./styles.css?v=20260831-2" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Tactical dashboard</p>
+          <h1>Workflow</h1>
+        </div>
+        <div class="user-panel">
+          <span id="connectionStatus" class="status-dot offline">Offline</span>
+          <span id="userRole" class="role-badge">guest</span>
+          <span id="roleDebug" class="role-debug" hidden></span>
+          <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
+        </div>
+      </header>
+
+      <main>
+        <section id="authView" class="auth-grid">
+          <div class="auth-copy">
+            <p class="eyebrow">secure access</p>
+            <h2>Вхід до журналу</h2>
+            <p>Авторизовані користувачі можуть вносити записи, переглядати зведення та фільтрувати події за періодами.</p>
+          </div>
+          <form id="loginForm" class="panel compact-form">
+            <label>
+              Email
+              <input id="email" type="email" autocomplete="email" required />
+            </label>
+            <label>
+              Пароль
+              <input id="password" type="password" autocomplete="current-password" required />
+            </label>
+            <button class="primary-button" type="submit">Увійти</button>
+            <p id="authMessage" class="message"></p>
+          </form>
+        </section>
+
+        <section id="dashboardView" hidden>
+          <section class="metric-grid" aria-label="Підсумки">
+            <article class="metric-card">
+              <span>День</span>
+              <strong id="dayTotal">0</strong>
+              <small><b id="dayDeploy">0</b> розг. / <b id="dayRecover">0</b> згорт.</small>
+            </article>
+            <article class="metric-card">
+              <span>Тиждень</span>
+              <strong id="weekTotal">0</strong>
+              <small><b id="weekDeploy">0</b> розг. / <b id="weekRecover">0</b> згорт.</small>
+            </article>
+            <article class="metric-card">
+              <span>Місяць</span>
+              <strong id="monthTotal">0</strong>
+              <small><b id="monthDeploy">0</b> розг. / <b id="monthRecover">0</b> згорт.</small>
+            </article>
+            <article class="metric-card alert">
+              <span>Активно</span>
+              <strong id="activeTotal">0</strong>
+              <small>за останньою дією серіала</small>
+            </article>
+            <article class="metric-card">
+              <span>Весь період</span>
+              <strong id="allTotal">0</strong>
+              <small><b id="allDeploy">0</b> розг. / <b id="allRecover">0</b> згорт.</small>
+            </article>
+          </section>
+
+          <section class="work-grid">
+            <form id="entryForm" class="panel entry-form">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">new record</p>
+                  <h2>Оперативний запис</h2>
+                </div>
+                <button id="resetFormButton" class="ghost-button" type="button">Очистити</button>
+              </div>
+
+              <input id="recordId" type="hidden" />
+              <label>
+                Дата
+                <input id="recordDate" type="date" required />
+              </label>
+              <label>
+                Засіб
+                <input id="asset" type="text" placeholder="Напр. Starlink, РЕБ, ретранслятор" required />
+              </label>
+              <label>
+                Назва
+                <input id="name" type="text" required />
+              </label>
+              <label>
+                Серіал №
+                <input id="serialNumber" type="text" required />
+              </label>
+              <label>
+                Район
+                <input id="area" type="text" required />
+              </label>
+              <label>
+                Дія
+                <select id="actionType" required>
+                  <option value="deploy">Розгортання</option>
+                  <option value="recover">Згортання</option>
+                </select>
+              </label>
+              <label class="wide">
+                Примітка
+                <textarea id="note" rows="4" placeholder="Коротко про умови, відповідального або зміни"></textarea>
+              </label>
+              <button id="saveButton" class="primary-button wide" type="submit">Зберегти запис</button>
+              <p id="formMessage" class="message wide"></p>
+            </form>
+
+            <section class="panel operations-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">records</p>
+                  <h2>Журнал подій</h2>
+                </div>
+              </div>
+
+              <div class="filters">
+                <input id="searchInput" type="search" placeholder="Пошук: засіб, назва, серіал, район" />
+                <select id="actionFilter">
+                  <option value="">Усі дії</option>
+                  <option value="deploy">Розгортання</option>
+                  <option value="recover">Згортання</option>
+                </select>
+                <input id="fromDate" type="date" />
+                <input id="toDate" type="date" />
+              </div>
+
+              <div class="intel-strip">
+                <div>
+                  <span>Топ район</span>
+                  <strong id="topArea">-</strong>
+                </div>
+                <div>
+                  <span>Топ засіб</span>
+                  <strong id="topAsset">-</strong>
+                </div>
+                <div>
+                  <span>У фільтрі</span>
+                  <strong id="filteredTotal">0</strong>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Дата</th>
+                      <th>Засіб</th>
+                      <th>Назва</th>
+                      <th>Серіал №</th>
+                      <th>Район</th>
+                      <th>Дія</th>
+                      <th>Примітка</th>
+                      <th class="admin-only">Керування</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recordsBody">
+                    <tr>
+                      <td colspan="8" class="empty-state">Немає записів</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="./supabase-config.js?v=20260831-2"></script>
+    <script src="./app.js?v=20260831-2"></script>
+  </body>
+</html>
