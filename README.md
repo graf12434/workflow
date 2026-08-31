@@ -5,7 +5,7 @@
 ## Налаштування Supabase
 
 1. Створіть Supabase project.
-2. Відкрийте SQL Editor і виконайте `supabase-schema.sql`.
+2. Відкрийте SQL Editor і виконайте `sql/supabase-schema.sql`.
 3. Увімкніть Email auth у Supabase Authentication.
 4. Створіть першого користувача.
 5. Призначте роль адміністратора:
