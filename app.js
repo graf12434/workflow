@@ -203,6 +203,12 @@ function renderAssetOptions(selectedValue = "") {
 
   elements.assetSelect.innerHTML = options.join("");
   if (selectedValue) elements.assetSelect.value = selectedValue;
+  updateAssetTitle();
+}
+
+function updateAssetTitle() {
+  const selected = elements.assetSelect.options[elements.assetSelect.selectedIndex];
+  elements.assetSelect.title = selected?.value ? selected.textContent : "";
 }
 
 function ensureAssetOption(value) {
@@ -387,6 +393,7 @@ function resetForm() {
   $("recordDate").value = todayISO();
   $("saveButton").textContent = "Зберегти запис";
   setMessage(elements.formMessage, "");
+  updateAssetTitle();
 }
 
 async function saveRecord(event) {
@@ -422,6 +429,7 @@ function editRecord(id) {
   $("recordDate").value = record.date;
   ensureAssetOption(record.asset);
   $("asset").value = record.asset;
+  updateAssetTitle();
   $("name").value = record.name;
   $("serialNumber").value = record.serial_number;
   $("area").value = record.area;
@@ -493,7 +501,10 @@ elements.addAssetButton.addEventListener("click", async () => {
 
   await loadAssets();
   elements.assetSelect.value = name;
+  updateAssetTitle();
 });
+
+elements.assetSelect.addEventListener("change", updateAssetTitle);
 
 [elements.searchInput, elements.actionFilter, elements.fromDate, elements.toDate].forEach((element) => {
   element.addEventListener("input", applyFilters);
