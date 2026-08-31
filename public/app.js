@@ -65,6 +65,11 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function formatDate(value) {
+  const [year, month, day] = value.split("-");
+  return `${day}.${month}.${year}`;
+}
+
 function parseDate(value) {
   const [year, month, day] = value.split("-").map(Number);
   return new Date(year, month - 1, day);
@@ -402,7 +407,7 @@ function renderRecords() {
         : '<td class="admin-only hidden-for-role"></td>';
 
       return `<tr>
-        <td>${escapeHtml(record.date)}</td>
+        <td>${escapeHtml(formatDate(record.date))}</td>
         <td>${escapeHtml(record.asset)}</td>
         <td>${escapeHtml(record.name)}</td>
         <td>${escapeHtml(record.serial_number)}</td>
