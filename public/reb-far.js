@@ -124,6 +124,7 @@ async function loadAssets() {
     .from("workflow_assets")
     .select("id, name")
     .eq("type", "long")
+    .eq("variant", "РЕБ")
     .order("name");
 
   if (error) {
