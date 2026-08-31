@@ -36,6 +36,7 @@ const elements = {
   resetFormButton: $("resetFormButton"),
   assetSelect: $("asset"),
   addAssetButton: $("addAssetButton"),
+  assetVariantFilter: $("assetVariantFilter"),
   areaSelect: $("area"),
   addAreaButton: $("addAreaButton"),
   rebMenu: $("rebMenu"),
@@ -213,12 +214,16 @@ async function loadAssets() {
 }
 
 function renderAssetOptions(selectedValue = "") {
-  const options = [`<option value="" disabled ${selectedValue ? "" : "selected"}>Оберіть засіб</option>`].concat(
-    state.assets.map((item) => `<option value="${escapeHtml(item.name)}">${escapeHtml(item.name)}</option>`)
+  const variant = elements.assetVariantFilter.value;
+  const filtered = variant ? state.assets.filter((item) => item.variant === variant) : state.assets;
+  const hasSelected = selectedValue && filtered.some((item) => item.name === selectedValue);
+
+  const options = [`<option value="" disabled ${hasSelected ? "" : "selected"}>Оберіть засіб</option>`].concat(
+    filtered.map((item) => `<option value="${escapeHtml(item.name)}">${escapeHtml(item.name)}</option>`)
   );
 
   elements.assetSelect.innerHTML = options.join("");
-  if (selectedValue) elements.assetSelect.value = selectedValue;
+  if (hasSelected) elements.assetSelect.value = selectedValue;
   updateAssetTitle();
 }
 
@@ -591,6 +596,7 @@ elements.assetForm.addEventListener("submit", async (event) => {
 });
 
 elements.assetSelect.addEventListener("change", updateAssetTitle);
+elements.assetVariantFilter.addEventListener("change", () => renderAssetOptions());
 
 elements.addAreaButton.addEventListener("click", async () => {
   const input = window.prompt("Назва нового району:");
