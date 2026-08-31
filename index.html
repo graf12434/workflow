@@ -116,7 +116,12 @@
               </label>
               <label>
                 Район
-                <input id="area" type="text" required />
+                <div class="field-row">
+                  <select id="area" required>
+                    <option value="" disabled selected>Оберіть район</option>
+                  </select>
+                  <button id="addAreaButton" class="icon-button" type="button" title="Додати район" hidden>+</button>
+                </div>
               </label>
               <label>
                 Дія

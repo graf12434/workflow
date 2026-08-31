@@ -14,7 +14,8 @@ const state = {
   profile: null,
   records: [],
   filteredRecords: [],
-  assets: []
+  assets: [],
+  areas: []
 };
 
 const roles = {
@@ -35,6 +36,8 @@ const elements = {
   resetFormButton: $("resetFormButton"),
   assetSelect: $("asset"),
   addAssetButton: $("addAssetButton"),
+  areaSelect: $("area"),
+  addAreaButton: $("addAreaButton"),
   authMessage: $("authMessage"),
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
@@ -117,6 +120,7 @@ async function loadSession() {
   if (state.user) {
     await loadProfile();
     await loadAssets();
+    await loadAreas();
     await loadRecords();
   }
 
@@ -211,6 +215,44 @@ function updateAssetTitle() {
   elements.assetSelect.title = selected?.value ? selected.textContent : "";
 }
 
+async function loadAreas() {
+  const { data, error } = await db.from("workflow_areas").select("id, name").order("name");
+
+  if (error) {
+    setMessage(elements.formMessage, error.message, true);
+    return;
+  }
+
+  state.areas = data || [];
+  renderAreaOptions(elements.areaSelect.value);
+}
+
+function renderAreaOptions(selectedValue = "") {
+  const options = [`<option value="" disabled ${selectedValue ? "" : "selected"}>Оберіть район</option>`].concat(
+    state.areas.map((item) => `<option value="${escapeHtml(item.name)}">${escapeHtml(item.name)}</option>`)
+  );
+
+  elements.areaSelect.innerHTML = options.join("");
+  if (selectedValue) elements.areaSelect.value = selectedValue;
+  updateAreaTitle();
+}
+
+function ensureAreaOption(value) {
+  if (!value) return;
+  const exists = [...elements.areaSelect.options].some((option) => option.value === value);
+  if (exists) return;
+
+  const option = document.createElement("option");
+  option.value = value;
+  option.textContent = value;
+  elements.areaSelect.append(option);
+}
+
+function updateAreaTitle() {
+  const selected = elements.areaSelect.options[elements.areaSelect.selectedIndex];
+  elements.areaSelect.title = selected?.value ? selected.textContent : "";
+}
+
 function ensureAssetOption(value) {
   if (!value) return;
   const exists = [...elements.assetSelect.options].some((option) => option.value === value);
@@ -236,6 +278,7 @@ function renderPermissions() {
   const { canCreate, canEdit, canDelete } = permissions();
   elements.entryForm.classList.toggle("hidden-for-role", !canCreate);
   elements.addAssetButton.hidden = roleName() !== "admin";
+  elements.addAreaButton.hidden = roleName() !== "admin";
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });
@@ -394,6 +437,7 @@ function resetForm() {
   $("saveButton").textContent = "Зберегти запис";
   setMessage(elements.formMessage, "");
   updateAssetTitle();
+  updateAreaTitle();
 }
 
 async function saveRecord(event) {
@@ -430,9 +474,11 @@ function editRecord(id) {
   ensureAssetOption(record.asset);
   $("asset").value = record.asset;
   updateAssetTitle();
+  ensureAreaOption(record.area);
+  $("area").value = record.area;
+  updateAreaTitle();
   $("name").value = record.name;
   $("serialNumber").value = record.serial_number;
-  $("area").value = record.area;
   $("actionType").value = record.action_type;
   $("note").value = record.note || "";
   $("saveButton").textContent = "Оновити запис";
@@ -481,7 +527,9 @@ elements.logoutButton.addEventListener("click", async () => {
   state.profile = null;
   state.records = [];
   state.assets = [];
+  state.areas = [];
   renderAssetOptions();
+  renderAreaOptions();
   renderAuthState();
 });
 
@@ -505,6 +553,24 @@ elements.addAssetButton.addEventListener("click", async () => {
 });
 
 elements.assetSelect.addEventListener("change", updateAssetTitle);
+
+elements.addAreaButton.addEventListener("click", async () => {
+  const input = window.prompt("Назва нового району:");
+  const name = input?.trim();
+  if (!name) return;
+
+  const { error } = await db.from("workflow_areas").insert({ name, created_by: state.user.id });
+  if (error) {
+    setMessage(elements.formMessage, error.message, true);
+    return;
+  }
+
+  await loadAreas();
+  elements.areaSelect.value = name;
+  updateAreaTitle();
+});
+
+elements.areaSelect.addEventListener("change", updateAreaTitle);
 
 [elements.searchInput, elements.actionFilter, elements.fromDate, elements.toDate].forEach((element) => {
   element.addEventListener("input", applyFilters);
