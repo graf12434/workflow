@@ -328,6 +328,23 @@ textarea:focus {
   grid-column: 1 / -1;
 }
 
+.field-row {
+  display: flex;
+  gap: 8px;
+}
+
+.field-row select {
+  flex: 1;
+  min-width: 0;
+}
+
+.field-row .icon-button {
+  min-height: 42px;
+  min-width: 42px;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
 .primary-button,
 .ghost-button,
 .icon-button {

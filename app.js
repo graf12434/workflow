@@ -13,7 +13,8 @@ const state = {
   user: null,
   profile: null,
   records: [],
-  filteredRecords: []
+  filteredRecords: [],
+  assets: []
 };
 
 const roles = {
@@ -32,6 +33,8 @@ const elements = {
   entryForm: $("entryForm"),
   logoutButton: $("logoutButton"),
   resetFormButton: $("resetFormButton"),
+  assetSelect: $("asset"),
+  addAssetButton: $("addAssetButton"),
   authMessage: $("authMessage"),
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
@@ -113,6 +116,7 @@ async function loadSession() {
 
   if (state.user) {
     await loadProfile();
+    await loadAssets();
     await loadRecords();
   }
 
@@ -180,6 +184,38 @@ async function loadRecords() {
   applyFilters();
 }
 
+async function loadAssets() {
+  const { data, error } = await db.from("workflow_assets").select("id, name").order("name");
+
+  if (error) {
+    setMessage(elements.formMessage, error.message, true);
+    return;
+  }
+
+  state.assets = data || [];
+  renderAssetOptions(elements.assetSelect.value);
+}
+
+function renderAssetOptions(selectedValue = "") {
+  const options = [`<option value="" disabled ${selectedValue ? "" : "selected"}>Оберіть засіб</option>`].concat(
+    state.assets.map((item) => `<option value="${escapeHtml(item.name)}">${escapeHtml(item.name)}</option>`)
+  );
+
+  elements.assetSelect.innerHTML = options.join("");
+  if (selectedValue) elements.assetSelect.value = selectedValue;
+}
+
+function ensureAssetOption(value) {
+  if (!value) return;
+  const exists = [...elements.assetSelect.options].some((option) => option.value === value);
+  if (exists) return;
+
+  const option = document.createElement("option");
+  option.value = value;
+  option.textContent = value;
+  elements.assetSelect.append(option);
+}
+
 function renderAuthState() {
   const signedIn = Boolean(state.user);
   elements.authView.hidden = signedIn;
@@ -193,6 +229,7 @@ function renderAuthState() {
 function renderPermissions() {
   const { canCreate, canEdit, canDelete } = permissions();
   elements.entryForm.classList.toggle("hidden-for-role", !canCreate);
+  elements.addAssetButton.hidden = roleName() !== "admin";
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });
@@ -383,6 +420,7 @@ function editRecord(id) {
 
   $("recordId").value = record.id;
   $("recordDate").value = record.date;
+  ensureAssetOption(record.asset);
   $("asset").value = record.asset;
   $("name").value = record.name;
   $("serialNumber").value = record.serial_number;
@@ -434,11 +472,28 @@ elements.logoutButton.addEventListener("click", async () => {
   state.user = null;
   state.profile = null;
   state.records = [];
+  state.assets = [];
+  renderAssetOptions();
   renderAuthState();
 });
 
 elements.entryForm.addEventListener("submit", saveRecord);
 elements.resetFormButton.addEventListener("click", resetForm);
+
+elements.addAssetButton.addEventListener("click", async () => {
+  const input = window.prompt("Назва нового засобу:");
+  const name = input?.trim();
+  if (!name) return;
+
+  const { error } = await db.from("workflow_assets").insert({ name, created_by: state.user.id });
+  if (error) {
+    setMessage(elements.formMessage, error.message, true);
+    return;
+  }
+
+  await loadAssets();
+  elements.assetSelect.value = name;
+});
 
 [elements.searchInput, elements.actionFilter, elements.fromDate, elements.toDate].forEach((element) => {
   element.addEventListener("input", applyFilters);

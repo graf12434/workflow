@@ -99,7 +99,12 @@
               </label>
               <label>
                 Засіб
-                <input id="asset" type="text" placeholder="Напр. Starlink, РЕБ, ретранслятор" required />
+                <div class="field-row">
+                  <select id="asset" required>
+                    <option value="" disabled selected>Оберіть засіб</option>
+                  </select>
+                  <button id="addAssetButton" class="icon-button" type="button" title="Додати засіб" hidden>+</button>
+                </div>
               </label>
               <label>
                 Назва
