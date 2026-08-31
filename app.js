@@ -330,8 +330,8 @@ function renderRecords() {
       const actions = canEdit || canDelete
         ? `<td class="admin-only">
             <div class="row-actions">
-              ${canEdit ? `<button class="icon-button" type="button" data-edit="${record.id}">Edit</button>` : ""}
-              ${canDelete ? `<button class="icon-button" type="button" data-delete="${record.id}">Del</button>` : ""}
+              ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}">&#9998;</button>` : ""}
+              ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}">&#10005;</button>` : ""}
             </div>
           </td>`
         : '<td class="admin-only hidden-for-role"></td>';

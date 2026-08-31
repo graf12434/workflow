@@ -4,15 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Workflow</title>
-    <link rel="stylesheet" href="./styles.css?v=20260831-2" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2311140f'/%3E%3Cpath d='M12 2 14.6 9.2 22 9.8 16.3 14.6 18.2 22 12 17.8 5.8 22 7.7 14.6 2 9.8 9.4 9.2Z' fill='%23c1b36b'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-3" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">Tactical dashboard</p>
-          <h1>Workflow</h1>
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">&#9733;</span>
+          <div>
+            <p class="eyebrow">Tactical dashboard // WF-01</p>
+            <h1>Workflow</h1>
+          </div>
         </div>
         <div class="user-panel">
           <span id="connectionStatus" class="status-dot offline">Offline</span>
@@ -179,7 +186,7 @@
       </main>
     </div>
 
-    <script src="./supabase-config.js?v=20260831-2"></script>
-    <script src="./app.js?v=20260831-2"></script>
+    <script src="./supabase-config.js?v=20260831-3"></script>
+    <script src="./app.js?v=20260831-3"></script>
   </body>
 </html>
