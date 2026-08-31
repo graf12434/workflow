@@ -36,7 +36,6 @@ const elements = {
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
   userRole: $("userRole"),
-  roleDebug: $("roleDebug"),
   recordsBody: $("recordsBody"),
   searchInput: $("searchInput"),
   actionFilter: $("actionFilter"),
@@ -122,8 +121,6 @@ async function loadSession() {
 
 async function loadProfile() {
   setMessage(elements.formMessage, "");
-  elements.roleDebug.hidden = true;
-  elements.roleDebug.textContent = "";
 
   const { data, error } = await db
     .from("profiles")
@@ -133,7 +130,6 @@ async function loadProfile() {
 
   if (!error && data) {
     state.profile = { ...data, role: normalizeRole(data.role) };
-    renderRoleDebug("id", data);
     return;
   }
 
@@ -144,7 +140,6 @@ async function loadProfile() {
       email: state.user.email,
       role: normalizeRole(rpcRole)
     };
-    renderRoleDebug("rpc", state.profile);
     return;
   }
 
@@ -156,16 +151,10 @@ async function loadProfile() {
 
   if (!emailError && emailData) {
     state.profile = { ...emailData, role: normalizeRole(emailData.role) };
-    renderRoleDebug("email", emailData);
     return;
   }
 
   state.profile = { role: "viewer", email: state.user.email };
-  renderRoleDebug("fallback", {
-    id: state.user.id,
-    email: state.user.email,
-    role: "viewer"
-  });
   if (error || emailError) {
     setMessage(
       elements.formMessage,
@@ -173,16 +162,6 @@ async function loadProfile() {
       true
     );
   }
-}
-
-function renderRoleDebug(source, profile) {
-  elements.roleDebug.hidden = false;
-  elements.roleDebug.textContent = `${source}: ${profile.email || state.user.email} / ${profile.id || state.user.id}`;
-  console.info("Workflow profile", {
-    source,
-    authUser: { id: state.user.id, email: state.user.email },
-    profile
-  });
 }
 
 async function loadRecords() {

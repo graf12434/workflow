@@ -110,7 +110,6 @@ textarea {
   height: 46px;
   border: 1px solid var(--khaki);
   color: var(--khaki);
-  font-size: 1.3rem;
   background: var(--panel-strong);
   flex-shrink: 0;
 }
@@ -155,8 +154,7 @@ h2 {
 }
 
 .status-dot,
-.role-badge,
-.role-debug {
+.role-badge {
   display: inline-flex;
   min-height: 34px;
   align-items: center;
@@ -193,15 +191,6 @@ h2 {
 .role-badge {
   color: var(--khaki);
   border-color: rgba(193, 179, 107, 0.5);
-}
-
-.role-debug {
-  max-width: min(520px, 90vw);
-  overflow: hidden;
-  color: var(--khaki);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-transform: none;
 }
 
 .auth-grid,
