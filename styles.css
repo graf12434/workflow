@@ -324,6 +324,16 @@ textarea:focus {
   box-shadow: 0 0 0 2px rgba(193, 179, 107, 0.18);
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.75;
+  filter: invert(85%) sepia(12%) saturate(500%) hue-rotate(0deg) brightness(105%);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
 .wide {
   grid-column: 1 / -1;
 }
