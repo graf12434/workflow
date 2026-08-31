@@ -38,6 +38,9 @@ const elements = {
   addAssetButton: $("addAssetButton"),
   areaSelect: $("area"),
   addAreaButton: $("addAreaButton"),
+  rebMenu: $("rebMenu"),
+  rebMenuButton: $("rebMenuButton"),
+  rebMenuList: $("rebMenuList"),
   authMessage: $("authMessage"),
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
@@ -284,6 +287,8 @@ function renderPermissions() {
   elements.entryForm.classList.toggle("hidden-for-role", !canCreate);
   elements.addAssetButton.hidden = roleName() !== "admin";
   elements.addAreaButton.hidden = roleName() !== "admin";
+  elements.rebMenu.hidden = !canCreate;
+  if (!canCreate) closeRebMenu();
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });
@@ -576,6 +581,39 @@ elements.addAreaButton.addEventListener("click", async () => {
 });
 
 elements.areaSelect.addEventListener("change", updateAreaTitle);
+
+function openRebMenu() {
+  elements.rebMenuList.hidden = false;
+  elements.rebMenuButton.setAttribute("aria-expanded", "true");
+}
+
+function closeRebMenu() {
+  elements.rebMenuList.hidden = true;
+  elements.rebMenuButton.setAttribute("aria-expanded", "false");
+}
+
+elements.rebMenuButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  if (elements.rebMenuList.hidden) {
+    openRebMenu();
+  } else {
+    closeRebMenu();
+  }
+});
+
+elements.rebMenuList.addEventListener("click", (event) => {
+  if (event.target.closest(".nav-menu-item")) closeRebMenu();
+});
+
+document.addEventListener("click", (event) => {
+  if (!elements.rebMenuList.hidden && !elements.rebMenu.contains(event.target)) {
+    closeRebMenu();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeRebMenu();
+});
 
 [elements.searchInput, elements.actionFilter, elements.fromDate, elements.toDate].forEach((element) => {
   element.addEventListener("input", applyFilters);
