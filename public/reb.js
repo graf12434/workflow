@@ -14,7 +14,20 @@ const state = {
   profile: null,
   records: [],
   filteredRecords: [],
-  assets: []
+  assets: [],
+  type: "long"
+};
+
+const typeTitles = {
+  long: "Дального радіуса",
+  medium: "Ближнього радіуса",
+  dome: "Купольні"
+};
+
+const typeRecordsTitles = {
+  long: "Засоби дального радіуса",
+  medium: "Засоби ближнього радіуса",
+  dome: "Купольні засоби"
 };
 
 const roles = {
@@ -50,7 +63,10 @@ const elements = {
   nameFilter: $("nameFilter"),
   ownershipFilter: $("ownershipFilter"),
   statusFilter: $("statusFilter"),
-  filteredTotal: $("filteredTotal")
+  filteredTotal: $("filteredTotal"),
+  pageTitle: $("pageTitle"),
+  recordsTitle: $("recordsTitle"),
+  typeSwitcher: $("typeSwitcher")
 };
 
 function roleName() {
@@ -85,6 +101,12 @@ function setConnected(isConnected) {
   elements.connectionStatus.classList.toggle("offline", !isConnected);
 }
 
+function applyTypeLabels() {
+  elements.pageTitle.textContent = typeTitles[state.type];
+  elements.recordsTitle.textContent = typeRecordsTitles[state.type];
+  document.title = `Workflow — ${typeTitles[state.type]}`;
+}
+
 function ownershipFilterValue() {
   return elements.ownershipFilter.value || "all";
 }
@@ -115,6 +137,7 @@ async function loadSession() {
   elements.logoutButton.hidden = false;
   elements.userRole.textContent = roleName();
   renderPermissions();
+  applyTypeLabels();
   await loadAssets();
   await loadRecords();
 }
@@ -123,7 +146,7 @@ async function loadAssets() {
   const { data, error } = await db
     .from("workflow_assets")
     .select("id, name")
-    .eq("type", "long")
+    .eq("type", state.type)
     .eq("variant", "РЕБ")
     .order("name");
 
@@ -195,6 +218,7 @@ async function loadRecords() {
   const { data, error } = await db
     .from("workflow_reb_far")
     .select("*")
+    .eq("type", state.type)
     .order("name", { ascending: true });
 
   if (error) {
@@ -277,6 +301,7 @@ function collectFormData() {
     ownership: $("ownership").value,
     status: $("status").value,
     note: $("note").value.trim() || null,
+    type: state.type,
     created_by: state.user.id
   };
 }
@@ -358,6 +383,14 @@ elements.backToJournalButton.addEventListener("click", () => {
 elements.nameFilter.addEventListener("change", applyFilters);
 elements.ownershipFilter.addEventListener("change", applyFilters);
 elements.statusFilter.addEventListener("change", applyFilters);
+
+elements.typeSwitcher.addEventListener("change", async () => {
+  state.type = elements.typeSwitcher.value;
+  applyTypeLabels();
+  resetForm();
+  await loadAssets();
+  await loadRecords();
+});
 
 elements.recordsBody.addEventListener("click", (event) => {
   const editId = event.target.dataset.edit;

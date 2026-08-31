@@ -4,14 +4,19 @@ create table if not exists public.workflow_reb_far (
   serial_number text not null,
   ownership text not null check (ownership in ('company', 'regiment')),
   status text not null check (status in ('ready', 'not_ready', 'repair', 'destroyed')),
+  type text not null default 'long' check (type in ('long', 'medium', 'dome')),
   note text,
   created_by uuid not null references auth.users(id),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
+alter table public.workflow_reb_far
+  add column if not exists type text not null default 'long' check (type in ('long', 'medium', 'dome'));
+
 create index if not exists workflow_reb_far_name_idx on public.workflow_reb_far(lower(name));
 create index if not exists workflow_reb_far_serial_idx on public.workflow_reb_far(lower(serial_number));
+create index if not exists workflow_reb_far_type_idx on public.workflow_reb_far(type);
 
 drop trigger if exists workflow_reb_far_set_updated_at on public.workflow_reb_far;
 create trigger workflow_reb_far_set_updated_at

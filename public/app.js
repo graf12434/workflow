@@ -39,9 +39,7 @@ const elements = {
   assetVariantFilter: $("assetVariantFilter"),
   areaSelect: $("area"),
   addAreaButton: $("addAreaButton"),
-  rebMenu: $("rebMenu"),
   rebMenuButton: $("rebMenuButton"),
-  rebMenuList: $("rebMenuList"),
   assetModal: $("assetModal"),
   assetForm: $("assetForm"),
   cancelAssetButton: $("cancelAssetButton"),
@@ -296,8 +294,7 @@ function renderPermissions() {
   elements.entryForm.classList.toggle("hidden-for-role", !canCreate);
   elements.addAssetButton.hidden = roleName() !== "admin";
   elements.addAreaButton.hidden = roleName() !== "admin";
-  elements.rebMenu.hidden = !canCreate;
-  if (!canCreate) closeRebMenu();
+  elements.rebMenuButton.hidden = !canCreate;
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });
@@ -616,43 +613,8 @@ elements.addAreaButton.addEventListener("click", async () => {
 
 elements.areaSelect.addEventListener("change", updateAreaTitle);
 
-function openRebMenu() {
-  elements.rebMenuList.hidden = false;
-  elements.rebMenuButton.setAttribute("aria-expanded", "true");
-}
-
-function closeRebMenu() {
-  elements.rebMenuList.hidden = true;
-  elements.rebMenuButton.setAttribute("aria-expanded", "false");
-}
-
-elements.rebMenuButton.addEventListener("click", (event) => {
-  event.stopPropagation();
-  if (elements.rebMenuList.hidden) {
-    openRebMenu();
-  } else {
-    closeRebMenu();
-  }
-});
-
-elements.rebMenuList.addEventListener("click", (event) => {
-  const item = event.target.closest(".nav-menu-item");
-  if (!item) return;
-  closeRebMenu();
-  if (item.dataset.category === "far") window.location.href = "./reb-far.html";
-});
-
-document.addEventListener("click", (event) => {
-  if (!elements.rebMenuList.hidden && !elements.rebMenu.contains(event.target)) {
-    closeRebMenu();
-  }
-});
-
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    closeRebMenu();
-    closeAssetModal();
-  }
+  if (event.key === "Escape") closeAssetModal();
 });
 
 [elements.searchInput, elements.actionFilter, elements.fromDate, elements.toDate].forEach((element) => {

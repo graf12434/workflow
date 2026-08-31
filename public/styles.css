@@ -114,61 +114,6 @@ textarea {
   flex-shrink: 0;
 }
 
-.nav-menu {
-  position: relative;
-}
-
-.nav-menu-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-menu-caret {
-  font-size: 0.7em;
-  transition: transform 0.15s ease;
-}
-
-.nav-menu-trigger[aria-expanded="true"] .nav-menu-caret {
-  transform: rotate(180deg);
-}
-
-.nav-menu-list {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  z-index: 20;
-  display: grid;
-  min-width: 220px;
-  border: 1px solid var(--khaki);
-  background: var(--panel-strong);
-  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.45);
-}
-
-.nav-menu-item {
-  padding: 11px 14px;
-  border: none;
-  border-bottom: 1px solid var(--line);
-  background: transparent;
-  color: var(--text);
-  text-align: left;
-  cursor: pointer;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-.nav-menu-item:last-child {
-  border-bottom: none;
-}
-
-.nav-menu-item:hover {
-  background: rgba(193, 179, 107, 0.12);
-  color: var(--khaki);
-}
-
 h1,
 h2,
 p {
@@ -413,10 +358,15 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 .primary-button,
 .ghost-button,
 .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 40px;
+  padding: 0 14px;
   border: 1px solid var(--line);
   color: var(--text);
   cursor: pointer;
+  text-decoration: none;
   font-family: var(--font-mono);
   text-transform: uppercase;
   font-weight: 700;
