@@ -37,7 +37,7 @@ const roles = {
   guest: { canCreate: false, canEdit: false, canDelete: false }
 };
 
-const ownershipLabels = { company: "Майно роти", regiment: "Майно полка" };
+const ownershipLabels = { company: "Майно роти", regiment: "Майно полка", community: "Майно громади" };
 const statusLabels = {
   in_formation: "В строю",
   company_storage: "Склад роти",
