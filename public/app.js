@@ -94,8 +94,15 @@ function setMessage(target, text, isError = false) {
   target.style.color = isError ? "var(--red)" : "var(--khaki)";
 }
 
+const actionLabels = {
+  deploy: "Розгортання",
+  recover: "Згортання",
+  relocate: "Переміщення",
+  destroyed: "Знищено"
+};
+
 function actionLabel(actionType) {
-  return actionType === "deploy" ? "Розгортання" : "Згортання";
+  return actionLabels[actionType] || actionType;
 }
 
 function escapeHtml(value = "") {
@@ -353,7 +360,7 @@ function activeSerialCount(records) {
       latestBySerial.set(record.serial_number.toLowerCase(), record.action_type);
     });
 
-  return [...latestBySerial.values()].filter((action) => action === "deploy").length;
+  return [...latestBySerial.values()].filter((action) => action === "deploy" || action === "relocate").length;
 }
 
 function mostFrequent(records, key) {

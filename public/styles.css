@@ -580,6 +580,16 @@ tbody tr:hover td {
   background: rgba(214, 166, 58, 0.1);
 }
 
+.action-pill.relocate {
+  color: var(--muted);
+  background: rgba(174, 182, 157, 0.08);
+}
+
+.action-pill.destroyed {
+  color: var(--red);
+  background: rgba(188, 90, 72, 0.1);
+}
+
 .status-pill {
   display: inline-flex;
   align-items: center;
