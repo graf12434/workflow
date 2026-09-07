@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-7" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-10" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -66,8 +66,9 @@
               <label class="wide">
                 Стан
                 <select id="status" required>
-                  <option value="ready">Боєготовий</option>
-                  <option value="not_ready">Небоєготовий</option>
+                  <option value="in_formation">В строю</option>
+                  <option value="company_storage">Склад роти</option>
+                  <option value="logistics_storage">Склад логістики</option>
                   <option value="repair">Ремонт</option>
                   <option value="destroyed">Знищений</option>
                 </select>
@@ -105,8 +106,9 @@
 
                 <select id="statusFilter" aria-label="Стан">
                   <option value="all">Всі</option>
-                  <option value="ready">Боєготовий</option>
-                  <option value="not_ready">Небоєготовий</option>
+                  <option value="in_formation">В строю</option>
+                  <option value="company_storage">Склад роти</option>
+                  <option value="logistics_storage">Склад логістики</option>
                   <option value="repair">Ремонт</option>
                   <option value="destroyed">Знищений</option>
                 </select>
@@ -149,6 +151,6 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./rer.js?v=20260831-8"></script>
+    <script src="./rer.js?v=20260831-9"></script>
   </body>
 </html>

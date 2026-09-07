@@ -3,7 +3,7 @@ create table if not exists public.workflow_reb_far (
   name text not null,
   serial_number text not null,
   ownership text not null check (ownership in ('company', 'regiment')),
-  status text not null check (status in ('ready', 'not_ready', 'repair', 'destroyed')),
+  status text not null check (status in ('in_formation', 'company_storage', 'logistics_storage', 'repair', 'destroyed')),
   type text not null default 'long' check (type in ('long', 'medium', 'dome')),
   variant text not null default 'РЕБ' check (variant in ('РЕБ', 'РЕР')),
   note text,

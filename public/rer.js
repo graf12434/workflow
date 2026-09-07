@@ -39,8 +39,9 @@ const roles = {
 
 const ownershipLabels = { company: "Майно роти", regiment: "Майно полка" };
 const statusLabels = {
-  ready: "Боєготовий",
-  not_ready: "Небоєготовий",
+  in_formation: "В строю",
+  company_storage: "Склад роти",
+  logistics_storage: "Склад логістики",
   repair: "Ремонт",
   destroyed: "Знищений"
 };

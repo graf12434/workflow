@@ -104,9 +104,9 @@ const actionLabels = {
 };
 
 const actionToRebFarStatus = {
-  deploy: "ready",
-  recover: "ready",
-  relocate: "ready",
+  deploy: "in_formation",
+  recover: "company_storage",
+  relocate: "in_formation",
   repair: "repair",
   destroyed: "destroyed"
 };
