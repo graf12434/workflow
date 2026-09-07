@@ -3,4 +3,4 @@ alter table public.workflow_records
 
 alter table public.workflow_records
   add constraint workflow_records_action_type_check
-  check (action_type in ('deploy', 'recover', 'relocate', 'destroyed'));
+  check (action_type in ('deploy', 'recover', 'relocate', 'repair', 'destroyed'));

@@ -14,7 +14,7 @@ create table if not exists public.workflow_records (
   name text not null,
   serial_number text not null,
   area text not null,
-  action_type text not null check (action_type in ('deploy', 'recover', 'relocate', 'destroyed')),
+  action_type text not null check (action_type in ('deploy', 'recover', 'relocate', 'repair', 'destroyed')),
   note text,
   created_by uuid not null references auth.users(id),
   created_at timestamptz not null default now(),

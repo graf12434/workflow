@@ -99,6 +99,7 @@ const actionLabels = {
   deploy: "Розгортання",
   recover: "Згортання",
   relocate: "Переміщення",
+  repair: "Ремонт",
   destroyed: "Знищено"
 };
 
