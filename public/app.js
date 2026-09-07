@@ -103,6 +103,14 @@ const actionLabels = {
   destroyed: "Знищено"
 };
 
+const actionToRebFarStatus = {
+  deploy: "ready",
+  recover: "ready",
+  relocate: "ready",
+  repair: "repair",
+  destroyed: "destroyed"
+};
+
 function actionLabel(actionType) {
   return actionLabels[actionType] || actionType;
 }
@@ -476,6 +484,34 @@ async function saveRecord(event) {
 
   const id = $("recordId").value;
   const payload = collectFormData();
+
+  const assetVariant = state.assets.find((item) => item.name === payload.asset)?.variant || null;
+  let rebFarMatchId = null;
+
+  if (assetVariant === "РЕБ" || assetVariant === "РЕР") {
+    const { data: matches, error: matchError } = await db
+      .from("workflow_reb_far")
+      .select("id")
+      .ilike("serial_number", payload.serial_number)
+      .limit(1);
+
+    if (matchError) {
+      setMessage(elements.formMessage, matchError.message, true);
+      return;
+    }
+
+    if (!matches || matches.length === 0) {
+      setMessage(
+        elements.formMessage,
+        `Засіб "${payload.asset}" із серійним №${payload.serial_number} не знайдено на сторінці "Засоби ${assetVariant}". Спочатку додайте його там, а потім вносьте запис.`,
+        true
+      );
+      return;
+    }
+
+    rebFarMatchId = matches[0].id;
+  }
+
   const query = id
     ? db.from("workflow_records").update(payload).eq("id", id)
     : db.from("workflow_records").insert(payload);
@@ -484,6 +520,13 @@ async function saveRecord(event) {
   if (error) {
     setMessage(elements.formMessage, error.message, true);
     return;
+  }
+
+  if (rebFarMatchId) {
+    const newStatus = actionToRebFarStatus[payload.action_type];
+    if (newStatus) {
+      await db.from("workflow_reb_far").update({ status: newStatus }).eq("id", rebFarMatchId);
+    }
   }
 
   setMessage(elements.formMessage, id ? "Запис оновлено." : "Запис збережено.");
