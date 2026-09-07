@@ -9,7 +9,7 @@ const supabaseReady = Boolean(
 
 const db = supabaseReady ? window.supabase.createClient(config.url, config.anonKey) : null;
 
-const VARIANT = "РЕБ";
+const VARIANT = "РЕР";
 
 const state = {
   user: null,
@@ -22,14 +22,12 @@ const state = {
 
 const typeTitles = {
   long: "Дального радіуса",
-  medium: "Ближнього радіуса",
-  dome: "Купольні"
+  medium: "Ближнього радіуса"
 };
 
 const typeRecordsTitles = {
   long: "Засоби дального радіуса",
-  medium: "Засоби ближнього радіуса",
-  dome: "Купольні засоби"
+  medium: "Засоби ближнього радіуса"
 };
 
 const roles = {

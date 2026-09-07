@@ -40,6 +40,7 @@ const elements = {
   areaSelect: $("area"),
   addAreaButton: $("addAreaButton"),
   rebMenuButton: $("rebMenuButton"),
+  rerMenuButton: $("rerMenuButton"),
   assetModal: $("assetModal"),
   assetForm: $("assetForm"),
   cancelAssetButton: $("cancelAssetButton"),
@@ -302,6 +303,7 @@ function renderPermissions() {
   elements.addAssetButton.hidden = roleName() !== "admin";
   elements.addAreaButton.hidden = roleName() !== "admin";
   elements.rebMenuButton.hidden = !canCreate;
+  elements.rerMenuButton.hidden = !canCreate;
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });
