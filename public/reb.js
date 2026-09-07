@@ -69,7 +69,8 @@ const elements = {
   filteredTotal: $("filteredTotal"),
   pageTitle: $("pageTitle"),
   recordsTitle: $("recordsTitle"),
-  typeSwitcher: $("typeSwitcher")
+  typeSwitcher: $("typeSwitcher"),
+  pdfButton: $("pdfButton")
 };
 
 function roleName() {
@@ -298,6 +299,67 @@ function renderRecords() {
   renderPermissions();
 }
 
+function exportToPdf() {
+  const rows = state.filteredRecords;
+  const printWindow = window.open("", "_blank");
+
+  if (!printWindow) {
+    setMessage(elements.formMessage, "Дозвольте спливаючі вікна в браузері, щоб сформувати PDF.", true);
+    return;
+  }
+
+  const printTitle = elements.recordsTitle.textContent;
+  const generatedAt = new Date().toLocaleString("uk-UA");
+
+  const rowsHtml = rows.length
+    ? rows
+        .map(
+          (record) => `
+      <tr>
+        <td>${escapeHtml(record.name)}</td>
+        <td>${escapeHtml(record.serial_number)}</td>
+        <td>${escapeHtml(ownershipLabels[record.ownership] || record.ownership)}</td>
+        <td>${escapeHtml(statusLabels[record.status] || record.status)}</td>
+        <td>${escapeHtml(record.note || "")}</td>
+      </tr>`
+        )
+        .join("")
+    : '<tr><td colspan="5">Немає записів</td></tr>';
+
+  printWindow.document.write(`<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>${escapeHtml(printTitle)}</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; color: #111; padding: 24px; }
+      h1 { font-size: 18px; margin: 0 0 4px; }
+      p.meta { color: #555; font-size: 12px; margin: 0 0 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; }
+      th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; }
+      th { background: #eee; }
+      @media print {
+        @page { size: A4 landscape; margin: 14mm; }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>${escapeHtml(printTitle)}</h1>
+    <p class="meta">Сформовано: ${escapeHtml(generatedAt)} · Записів: ${rows.length}</p>
+    <table>
+      <thead>
+        <tr><th>Назва</th><th>Серійний №</th><th>Належність</th><th>Стан</th><th>Примітка</th></tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+  </body>
+</html>`);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
 function collectFormData() {
   return {
     name: $("name").value.trim(),
@@ -396,6 +458,8 @@ elements.typeSwitcher.addEventListener("change", async () => {
   await loadAssets();
   await loadRecords();
 });
+
+elements.pdfButton.addEventListener("click", exportToPdf);
 
 elements.recordsBody.addEventListener("click", (event) => {
   const editId = event.target.dataset.edit;

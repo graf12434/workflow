@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-10" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-11" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -88,11 +88,14 @@
                   <p class="eyebrow">records</p>
                   <h2 id="recordsTitle">Засоби дального радіуса</h2>
                 </div>
-                <select id="typeSwitcher" aria-label="Тип засобів РЕБ">
-                  <option value="long">Дального радіуса</option>
-                  <option value="medium">Ближнього радіуса</option>
-                  <option value="dome">Купольні</option>
-                </select>
+                <div class="section-head-actions">
+                  <button id="pdfButton" class="ghost-button" type="button">PDF</button>
+                  <select id="typeSwitcher" aria-label="Тип засобів РЕБ">
+                    <option value="long">Дального радіуса</option>
+                    <option value="medium">Ближнього радіуса</option>
+                    <option value="dome">Купольні</option>
+                  </select>
+                </div>
               </div>
 
               <div class="filters">
@@ -154,6 +157,6 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./reb.js?v=20260831-10"></script>
+    <script src="./reb.js?v=20260831-11"></script>
   </body>
 </html>
