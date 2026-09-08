@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-11" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-12" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -102,25 +102,39 @@
               </div>
 
               <div class="filters">
-                <select id="nameFilter">
-                  <option value="">Усі назви</option>
-                </select>
+                <label>
+                  Назва
+                  <select id="nameFilter">
+                    <option value="">Усі назви</option>
+                  </select>
+                </label>
 
-                <select id="ownershipFilter" aria-label="Належність">
-                  <option value="all">Усі</option>
-                  <option value="company">Майно роти</option>
-                  <option value="regiment">Майно полка</option>
-                  <option value="community">Майно громади</option>
-                </select>
+                <label>
+                  Серійний №
+                  <input id="serialFilter" type="text" placeholder="Пошук за серійним №" />
+                </label>
 
-                <select id="statusFilter" aria-label="Стан">
-                  <option value="all">Всі</option>
-                  <option value="in_formation">В строю</option>
-                  <option value="company_storage">Склад роти</option>
-                  <option value="logistics_storage">Склад логістики</option>
-                  <option value="repair">Ремонт</option>
-                  <option value="destroyed">Знищений</option>
-                </select>
+                <label>
+                  Належність
+                  <select id="ownershipFilter">
+                    <option value="all">Усі</option>
+                    <option value="company">Майно роти</option>
+                    <option value="regiment">Майно полка</option>
+                    <option value="community">Майно громади</option>
+                  </select>
+                </label>
+
+                <label>
+                  Стан
+                  <select id="statusFilter">
+                    <option value="all">Всі</option>
+                    <option value="in_formation">В строю</option>
+                    <option value="company_storage">Склад роти</option>
+                    <option value="logistics_storage">Склад логістики</option>
+                    <option value="repair">Ремонт</option>
+                    <option value="destroyed">Знищений</option>
+                  </select>
+                </label>
               </div>
 
               <div class="intel-strip">
@@ -180,6 +194,6 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./rer.js?v=20260831-13"></script>
+    <script src="./rer.js?v=20260831-14"></script>
   </body>
 </html>

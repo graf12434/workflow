@@ -480,6 +480,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   margin: 14px 0;
 }
 
+.filters > label {
+  flex: 1 1 160px;
+}
+
 .filters input,
 .filters select {
   flex: 1 1 160px;

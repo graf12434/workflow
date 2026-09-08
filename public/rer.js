@@ -70,6 +70,7 @@ const elements = {
   userRole: $("userRole"),
   recordsBody: $("recordsBody"),
   nameFilter: $("nameFilter"),
+  serialFilter: $("serialFilter"),
   ownershipFilter: $("ownershipFilter"),
   statusFilter: $("statusFilter"),
   filteredTotal: $("filteredTotal"),
@@ -259,12 +260,14 @@ function renderNameFilterOptions() {
 
 function applyFilters() {
   const name = elements.nameFilter.value;
+  const serial = elements.serialFilter.value.trim().toLowerCase();
   const ownership = ownershipFilterValue();
   const status = statusFilterValue();
 
   state.filteredRecords = state.records.filter((record) => {
     return (
       (!name || record.name === name) &&
+      (!serial || record.serial_number.toLowerCase().includes(serial)) &&
       (ownership === "all" || record.ownership === ownership) &&
       (status === "all" || record.status === status)
     );
@@ -534,6 +537,7 @@ elements.backToJournalButton.addEventListener("click", () => {
 });
 
 elements.nameFilter.addEventListener("change", applyFilters);
+elements.serialFilter.addEventListener("input", applyFilters);
 elements.ownershipFilter.addEventListener("change", applyFilters);
 elements.statusFilter.addEventListener("change", applyFilters);
 
