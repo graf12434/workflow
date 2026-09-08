@@ -57,6 +57,14 @@ const elements = {
   backToJournalButton: $("backToJournalButton"),
   resetFormButton: $("resetFormButton"),
   nameSelect: $("name"),
+  addAssetButton: $("addAssetButton"),
+  editAssetButton: $("editAssetButton"),
+  assetModal: $("assetModal"),
+  assetForm: $("assetForm"),
+  assetModalTitle: $("assetModalTitle"),
+  assetSubmitButton: $("assetSubmitButton"),
+  cancelAssetButton: $("cancelAssetButton"),
+  assetModalMessage: $("assetModalMessage"),
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
   userRole: $("userRole"),
@@ -211,6 +219,8 @@ async function loadProfile() {
 function renderPermissions() {
   const { canCreate, canEdit, canDelete } = permissions();
   elements.entryForm.classList.toggle("hidden-for-role", !canCreate);
+  elements.addAssetButton.hidden = roleName() !== "admin";
+  elements.editAssetButton.hidden = roleName() !== "admin";
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });
@@ -432,6 +442,75 @@ async function deleteRecord(id) {
 
   await loadRecords();
 }
+
+let assetModalMode = "add";
+let assetEditId = null;
+
+function openAddAssetModal() {
+  assetModalMode = "add";
+  assetEditId = null;
+  elements.assetModalTitle.textContent = "Додати назву засобу";
+  elements.assetSubmitButton.textContent = "Додати";
+  $("assetName").value = "";
+  setMessage(elements.assetModalMessage, "");
+  elements.assetModal.hidden = false;
+  $("assetName").focus();
+}
+
+function openEditAssetModal() {
+  const currentName = elements.nameSelect.value;
+  const asset = state.assets.find((item) => item.name === currentName);
+  if (!asset) {
+    setMessage(elements.formMessage, "Спочатку оберіть назву зі списку.", true);
+    return;
+  }
+
+  assetModalMode = "edit";
+  assetEditId = asset.id;
+  elements.assetModalTitle.textContent = "Редагувати назву засобу";
+  elements.assetSubmitButton.textContent = "Зберегти";
+  $("assetName").value = asset.name;
+  setMessage(elements.assetModalMessage, "");
+  elements.assetModal.hidden = false;
+  $("assetName").focus();
+}
+
+function closeAssetModal() {
+  elements.assetModal.hidden = true;
+}
+
+elements.addAssetButton.addEventListener("click", openAddAssetModal);
+elements.editAssetButton.addEventListener("click", openEditAssetModal);
+elements.cancelAssetButton.addEventListener("click", closeAssetModal);
+
+elements.assetModal.addEventListener("click", (event) => {
+  if (event.target === elements.assetModal) closeAssetModal();
+});
+
+elements.assetForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const name = $("assetName").value.trim();
+  if (!name) return;
+
+  const query = assetModalMode === "edit"
+    ? db.from("workflow_assets").update({ name }).eq("id", assetEditId)
+    : db.from("workflow_assets").insert({ name, type: state.type, variant: VARIANT, created_by: state.user.id });
+  const { error } = await query;
+
+  if (error) {
+    setMessage(elements.assetModalMessage, error.message, true);
+    return;
+  }
+
+  closeAssetModal();
+  await loadAssets();
+  elements.nameSelect.value = name;
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeAssetModal();
+});
 
 elements.entryForm.addEventListener("submit", saveRecord);
 elements.resetFormButton.addEventListener("click", resetForm);

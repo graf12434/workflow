@@ -127,6 +127,7 @@ alter table public.workflow_assets enable row level security;
 
 drop policy if exists "assets_select_authenticated" on public.workflow_assets;
 drop policy if exists "assets_insert_admin" on public.workflow_assets;
+drop policy if exists "assets_update_admin" on public.workflow_assets;
 
 create policy "assets_select_authenticated"
 on public.workflow_assets for select
@@ -140,6 +141,12 @@ with check (
   created_by = auth.uid()
   and public.get_my_role() = 'admin'
 );
+
+create policy "assets_update_admin"
+on public.workflow_assets for update
+to authenticated
+using (public.get_my_role() = 'admin')
+with check (public.get_my_role() = 'admin');
 
 insert into public.workflow_assets (name)
 values ('Starlink'), ('РЕБ'), ('Ретранслятор')

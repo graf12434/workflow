@@ -113,7 +113,6 @@
                   <select id="asset" required>
                     <option value="" disabled selected>Оберіть засіб</option>
                   </select>
-                  <button id="addAssetButton" class="icon-button" type="button" title="Додати засіб" hidden>+</button>
                 </div>
               </label>
               <label>
@@ -214,45 +213,9 @@
         </section>
       </main>
 
-      <div id="assetModal" class="modal-overlay" hidden>
-        <form id="assetForm" class="panel entry-form modal-panel">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">new asset</p>
-              <h2>Додати засіб</h2>
-            </div>
-          </div>
-          <label class="wide">
-            Назва
-            <input id="assetName" type="text" required />
-          </label>
-          <label class="wide">
-            Тип
-            <select id="assetType">
-              <option value="">Без категорії</option>
-              <option value="long">Дального радіуса</option>
-              <option value="medium">Ближнього радіуса</option>
-              <option value="dome">Купольні</option>
-            </select>
-          </label>
-          <label class="wide">
-            Варіант
-            <select id="assetVariant">
-              <option value="">Без варіанту</option>
-              <option value="РЕБ">РЕБ</option>
-              <option value="РЕР">РЕР</option>
-            </select>
-          </label>
-          <div class="modal-actions wide">
-            <button id="cancelAssetButton" class="ghost-button" type="button">Скасувати</button>
-            <button class="primary-button" type="submit">Додати</button>
-          </div>
-          <p id="assetModalMessage" class="message wide"></p>
-        </form>
-      </div>
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./app.js?v=20260831-11"></script>
+    <script src="./app.js?v=20260831-12"></script>
   </body>
 </html>

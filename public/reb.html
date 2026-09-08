@@ -48,9 +48,13 @@
               <input id="recordId" type="hidden" />
               <label class="wide">
                 Назва
-                <select id="name" required>
-                  <option value="" disabled selected>Оберіть назву</option>
-                </select>
+                <div class="field-row">
+                  <select id="name" required>
+                    <option value="" disabled selected>Оберіть назву</option>
+                  </select>
+                  <button id="addAssetButton" class="icon-button" type="button" title="Додати назву засобу" hidden>+</button>
+                  <button id="editAssetButton" class="icon-button" type="button" title="Редагувати назву засобу" hidden>&#9998;</button>
+                </div>
               </label>
               <label>
                 Серійний №
@@ -154,9 +158,29 @@
           <p class="message" id="noAccessMessage">Увійдіть у систему, щоб переглянути цю сторінку.</p>
         </section>
       </main>
+
+      <div id="assetModal" class="modal-overlay" hidden>
+        <form id="assetForm" class="panel entry-form modal-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">asset name</p>
+              <h2 id="assetModalTitle">Додати назву засобу</h2>
+            </div>
+          </div>
+          <label class="wide">
+            Назва
+            <input id="assetName" type="text" required />
+          </label>
+          <div class="modal-actions wide">
+            <button id="cancelAssetButton" class="ghost-button" type="button">Скасувати</button>
+            <button id="assetSubmitButton" class="primary-button" type="submit">Додати</button>
+          </div>
+          <p id="assetModalMessage" class="message wide"></p>
+        </form>
+      </div>
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./reb.js?v=20260831-11"></script>
+    <script src="./reb.js?v=20260831-12"></script>
   </body>
 </html>

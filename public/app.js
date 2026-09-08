@@ -35,16 +35,11 @@ const elements = {
   logoutButton: $("logoutButton"),
   resetFormButton: $("resetFormButton"),
   assetSelect: $("asset"),
-  addAssetButton: $("addAssetButton"),
   assetVariantFilter: $("assetVariantFilter"),
   areaSelect: $("area"),
   addAreaButton: $("addAreaButton"),
   rebMenuButton: $("rebMenuButton"),
   rerMenuButton: $("rerMenuButton"),
-  assetModal: $("assetModal"),
-  assetForm: $("assetForm"),
-  cancelAssetButton: $("cancelAssetButton"),
-  assetModalMessage: $("assetModalMessage"),
   authMessage: $("authMessage"),
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
@@ -309,7 +304,6 @@ function renderAuthState() {
 function renderPermissions() {
   const { canCreate, canEdit, canDelete } = permissions();
   elements.entryForm.classList.toggle("hidden-for-role", !canCreate);
-  elements.addAssetButton.hidden = roleName() !== "admin";
   elements.addAreaButton.hidden = roleName() !== "admin";
   elements.rebMenuButton.hidden = !canCreate;
   elements.rerMenuButton.hidden = !canCreate;
@@ -605,46 +599,6 @@ elements.logoutButton.addEventListener("click", async () => {
 elements.entryForm.addEventListener("submit", saveRecord);
 elements.resetFormButton.addEventListener("click", resetForm);
 
-function openAssetModal() {
-  $("assetName").value = "";
-  $("assetType").value = "";
-  $("assetVariant").value = "";
-  setMessage(elements.assetModalMessage, "");
-  elements.assetModal.hidden = false;
-  $("assetName").focus();
-}
-
-function closeAssetModal() {
-  elements.assetModal.hidden = true;
-}
-
-elements.addAssetButton.addEventListener("click", openAssetModal);
-elements.cancelAssetButton.addEventListener("click", closeAssetModal);
-
-elements.assetModal.addEventListener("click", (event) => {
-  if (event.target === elements.assetModal) closeAssetModal();
-});
-
-elements.assetForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const name = $("assetName").value.trim();
-  if (!name) return;
-  const type = $("assetType").value || null;
-  const variant = $("assetVariant").value || null;
-
-  const { error } = await db.from("workflow_assets").insert({ name, type, variant, created_by: state.user.id });
-  if (error) {
-    setMessage(elements.assetModalMessage, error.message, true);
-    return;
-  }
-
-  closeAssetModal();
-  await loadAssets();
-  elements.assetSelect.value = name;
-  updateAssetTitle();
-});
-
 elements.assetSelect.addEventListener("change", updateAssetTitle);
 elements.assetVariantFilter.addEventListener("change", () => renderAssetOptions());
 
@@ -665,10 +619,6 @@ elements.addAreaButton.addEventListener("click", async () => {
 });
 
 elements.areaSelect.addEventListener("change", updateAreaTitle);
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeAssetModal();
-});
 
 [elements.searchInput, elements.actionFilter, elements.fromDate, elements.toDate].forEach((element) => {
   element.addEventListener("input", applyFilters);
