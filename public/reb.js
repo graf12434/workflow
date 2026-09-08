@@ -496,12 +496,21 @@ elements.assetForm.addEventListener("submit", async (event) => {
   if (!name) return;
 
   const query = assetModalMode === "edit"
-    ? db.from("workflow_assets").update({ name }).eq("id", assetEditId)
+    ? db.from("workflow_assets").update({ name }).eq("id", assetEditId).select()
     : db.from("workflow_assets").insert({ name, type: state.type, variant: VARIANT, created_by: state.user.id });
-  const { error } = await query;
+  const { data, error } = await query;
 
   if (error) {
     setMessage(elements.assetModalMessage, error.message, true);
+    return;
+  }
+
+  if (assetModalMode === "edit" && (!data || data.length === 0)) {
+    setMessage(
+      elements.assetModalMessage,
+      "Не вдалося оновити назву: немає прав на редагування у базі даних.",
+      true
+    );
     return;
   }
 
