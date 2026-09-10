@@ -40,6 +40,10 @@ const elements = {
   addAreaButton: $("addAreaButton"),
   rebMenuButton: $("rebMenuButton"),
   rerMenuButton: $("rerMenuButton"),
+  adrMenuButton: $("adrMenuButton"),
+  specMenuButton: $("specMenuButton"),
+  partsMenuButton: $("partsMenuButton"),
+  otherMenuButton: $("otherMenuButton"),
   authMessage: $("authMessage"),
   formMessage: $("formMessage"),
   connectionStatus: $("connectionStatus"),
@@ -307,6 +311,10 @@ function renderPermissions() {
   elements.addAreaButton.hidden = roleName() !== "admin";
   elements.rebMenuButton.hidden = !canCreate;
   elements.rerMenuButton.hidden = !canCreate;
+  elements.adrMenuButton.hidden = !canCreate;
+  elements.specMenuButton.hidden = !canCreate;
+  elements.partsMenuButton.hidden = !canCreate;
+  elements.otherMenuButton.hidden = !canCreate;
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });

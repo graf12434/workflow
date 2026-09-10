@@ -113,8 +113,9 @@ using (public.get_my_role() = 'admin');
 create table if not exists public.workflow_assets (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
-  type text check (type in ('long', 'medium', 'dome')),
-  variant text check (variant in ('РЕБ', 'РЕР')),
+  type text check (type in ('long', 'medium')),
+  variant text check (variant in ('РЕБ', 'РЕР', 'АДР', 'Спец обладнання', 'Запчастини', 'Інше')),
+  category text check (category in ('directional', 'dome', 'rer', 'video')),
   created_by uuid references auth.users(id),
   created_at timestamptz not null default now()
 );
@@ -122,6 +123,7 @@ create table if not exists public.workflow_assets (
 create index if not exists workflow_assets_name_idx on public.workflow_assets(lower(name));
 create index if not exists workflow_assets_type_idx on public.workflow_assets(type);
 create index if not exists workflow_assets_variant_idx on public.workflow_assets(variant);
+create index if not exists workflow_assets_category_idx on public.workflow_assets(category);
 
 alter table public.workflow_assets enable row level security;
 
@@ -185,8 +187,9 @@ create table if not exists public.workflow_reb_far (
   serial_number text not null,
   ownership text not null check (ownership in ('company', 'regiment', 'community')),
   status text not null check (status in ('in_formation', 'company_storage', 'logistics_storage', 'repair', 'destroyed')),
-  type text not null default 'long' check (type in ('long', 'medium', 'dome')),
-  variant text not null default 'РЕБ' check (variant in ('РЕБ', 'РЕР')),
+  type text not null default 'long' check (type in ('long', 'medium')),
+  variant text not null default 'РЕБ' check (variant in ('РЕБ', 'РЕР', 'АДР', 'Спец обладнання', 'Запчастини', 'Інше')),
+  category text check (category in ('directional', 'dome', 'rer', 'video')),
   note text,
   created_by uuid not null references auth.users(id),
   created_at timestamptz not null default now(),
@@ -197,6 +200,7 @@ create index if not exists workflow_reb_far_name_idx on public.workflow_reb_far(
 create index if not exists workflow_reb_far_serial_idx on public.workflow_reb_far(lower(serial_number));
 create index if not exists workflow_reb_far_variant_idx on public.workflow_reb_far(variant);
 create index if not exists workflow_reb_far_type_idx on public.workflow_reb_far(type);
+create index if not exists workflow_reb_far_category_idx on public.workflow_reb_far(category);
 
 drop trigger if exists workflow_reb_far_set_updated_at on public.workflow_reb_far;
 create trigger workflow_reb_far_set_updated_at

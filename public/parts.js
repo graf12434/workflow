@@ -9,26 +9,14 @@ const supabaseReady = Boolean(
 
 const db = supabaseReady ? window.supabase.createClient(config.url, config.anonKey) : null;
 
-const VARIANT = "РЕР";
+const VARIANT = "Запчастини";
 
 const state = {
   user: null,
   profile: null,
   records: [],
   filteredRecords: [],
-  assets: [],
-  category: "rer",
-  type: "long"
-};
-
-const categoryTitles = {
-  rer: "Засіб РЕР",
-  video: "Засіб перехоплення відео"
-};
-
-const typeTitles = {
-  long: "Дального радіуса",
-  medium: "Ближнього радіуса"
+  assets: []
 };
 
 const roles = {
@@ -75,10 +63,7 @@ const elements = {
   ownershipFilter: $("ownershipFilter"),
   statusFilter: $("statusFilter"),
   filteredTotal: $("filteredTotal"),
-  pageTitle: $("pageTitle"),
   recordsTitle: $("recordsTitle"),
-  categorySwitcher: $("categorySwitcher"),
-  typeSwitcher: $("typeSwitcher"),
   pdfButton: $("pdfButton")
 };
 
@@ -114,14 +99,6 @@ function setConnected(isConnected) {
   elements.connectionStatus.classList.toggle("offline", !isConnected);
 }
 
-function applyLabels() {
-  const category = categoryTitles[state.category];
-  const type = typeTitles[state.type];
-  elements.pageTitle.textContent = `${category} · ${type}`;
-  elements.recordsTitle.textContent = `Засоби: ${category}, ${type}`;
-  document.title = `Workflow — ${category} · ${type}`;
-}
-
 function ownershipFilterValue() {
   return elements.ownershipFilter.value || "all";
 }
@@ -152,7 +129,6 @@ async function loadSession() {
   elements.logoutButton.hidden = false;
   elements.userRole.textContent = roleName();
   renderPermissions();
-  applyLabels();
   await loadAssets();
   await loadRecords();
 }
@@ -161,8 +137,6 @@ async function loadAssets() {
   const { data, error } = await db
     .from("workflow_assets")
     .select("id, name")
-    .eq("type", state.type)
-    .eq("category", state.category)
     .eq("variant", VARIANT)
     .order("name");
 
@@ -236,8 +210,6 @@ async function loadRecords() {
   const { data, error } = await db
     .from("workflow_reb_far")
     .select("*")
-    .eq("type", state.type)
-    .eq("category", state.category)
     .eq("variant", VARIANT)
     .order("name", { ascending: true });
 
@@ -384,8 +356,6 @@ function collectFormData() {
     ownership: $("ownership").value,
     status: $("status").value,
     note: $("note").value.trim() || null,
-    type: state.type,
-    category: state.category,
     variant: VARIANT,
     created_by: state.user.id
   };
@@ -505,13 +475,7 @@ elements.assetForm.addEventListener("submit", async (event) => {
 
   const query = assetModalMode === "edit"
     ? db.from("workflow_assets").update({ name }).eq("id", assetEditId).select()
-    : db.from("workflow_assets").insert({
-        name,
-        type: state.type,
-        category: state.category,
-        variant: VARIANT,
-        created_by: state.user.id
-      });
+    : db.from("workflow_assets").insert({ name, variant: VARIANT, created_by: state.user.id });
   const { data, error } = await query;
 
   if (error) {
@@ -553,22 +517,6 @@ elements.nameFilter.addEventListener("change", applyFilters);
 elements.serialFilter.addEventListener("input", applyFilters);
 elements.ownershipFilter.addEventListener("change", applyFilters);
 elements.statusFilter.addEventListener("change", applyFilters);
-
-elements.categorySwitcher.addEventListener("change", async () => {
-  state.category = elements.categorySwitcher.value;
-  applyLabels();
-  resetForm();
-  await loadAssets();
-  await loadRecords();
-});
-
-elements.typeSwitcher.addEventListener("change", async () => {
-  state.type = elements.typeSwitcher.value;
-  applyLabels();
-  resetForm();
-  await loadAssets();
-  await loadRecords();
-});
 
 elements.pdfButton.addEventListener("click", exportToPdf);
 
