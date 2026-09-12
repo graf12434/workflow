@@ -46,6 +46,12 @@ const elements = {
   otherMenuButton: $("otherMenuButton"),
   authMessage: $("authMessage"),
   formMessage: $("formMessage"),
+  reportButton: $("reportButton"),
+  reportModal: $("reportModal"),
+  reportForm: $("reportForm"),
+  reportSelectAll: $("reportSelectAll"),
+  cancelReportButton: $("cancelReportButton"),
+  reportModalMessage: $("reportModalMessage"),
   connectionStatus: $("connectionStatus"),
   userRole: $("userRole"),
   recordsBody: $("recordsBody"),
@@ -300,6 +306,7 @@ function renderAuthState() {
   elements.authView.hidden = signedIn;
   elements.dashboardView.hidden = !signedIn;
   elements.logoutButton.hidden = !signedIn;
+  elements.reportButton.hidden = !signedIn;
   elements.userRole.textContent = roleName();
   $("recordDate").value ||= todayISO();
   renderPermissions();
@@ -444,7 +451,7 @@ function renderRecords() {
         <td>${escapeHtml(record.serial_number)}</td>
         <td>${escapeHtml(record.area)}</td>
         <td><span class="action-pill ${record.action_type}">${actionLabel(record.action_type)}</span></td>
-        <td>${escapeHtml(record.note || "")}</td>
+        <td class="note-cell" title="${escapeHtml(record.note || "")}">${escapeHtml(record.note || "")}</td>
         ${actions}
       </tr>`;
     })
@@ -638,6 +645,157 @@ elements.recordsBody.addEventListener("click", (event) => {
 
   if (editId) editRecord(editId);
   if (deleteId) deleteRecord(deleteId);
+});
+
+const reportVariantLabels = {
+  "РЕБ": "Засоби РЕБ",
+  "РЕР": "Засоби РЕР",
+  "АДР": "АДР",
+  "Спец обладнання": "Спец обладнання",
+  "Запчастини": "Запчастини",
+  "Інше": "Інше"
+};
+
+const reportOwnershipLabels = { company: "Майно роти", regiment: "Майно полка", community: "Майно громади" };
+const reportStatusLabels = {
+  in_formation: "В строю",
+  company_storage: "Склад роти",
+  logistics_storage: "Склад логістики",
+  repair: "Ремонт",
+  destroyed: "Знищений"
+};
+
+function reportCategoryCheckboxes() {
+  return [...document.querySelectorAll(".reportCategory")];
+}
+
+function openReportModal() {
+  setMessage(elements.reportModalMessage, "");
+  elements.reportModal.hidden = false;
+}
+
+function closeReportModal() {
+  elements.reportModal.hidden = true;
+}
+
+function printReport(records, selectedVariants) {
+  const printWindow = window.open("", "_blank");
+
+  if (!printWindow) {
+    setMessage(elements.reportModalMessage, "Дозвольте спливаючі вікна в браузері, щоб сформувати звіт.", true);
+    return;
+  }
+
+  const generatedAt = new Date().toLocaleString("uk-UA");
+
+  const sections = selectedVariants
+    .map((variant) => {
+      const rows = records.filter((record) => record.variant === variant);
+      const rowsHtml = rows.length
+        ? rows
+            .map(
+              (record) => `
+          <tr>
+            <td>${escapeHtml(record.name)}</td>
+            <td>${escapeHtml(record.serial_number)}</td>
+            <td>${escapeHtml(reportOwnershipLabels[record.ownership] || record.ownership)}</td>
+            <td>${escapeHtml(reportStatusLabels[record.status] || record.status)}</td>
+            <td>${escapeHtml(record.note || "")}</td>
+          </tr>`
+            )
+            .join("")
+        : '<tr><td colspan="5">Немає записів</td></tr>';
+
+      return `
+      <h2>${escapeHtml(reportVariantLabels[variant] || variant)} (${rows.length})</h2>
+      <table>
+        <thead>
+          <tr><th>Назва</th><th>Серійний №</th><th>Належність</th><th>Стан</th><th>Примітка</th></tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>`;
+    })
+    .join("");
+
+  printWindow.document.write(`<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Звіт по засобах</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; color: #111; padding: 24px; }
+      h1 { font-size: 20px; margin: 0 0 4px; }
+      h2 { font-size: 15px; margin: 24px 0 6px; }
+      p.meta { color: #555; font-size: 12px; margin: 0 0 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+      th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; }
+      th { background: #eee; }
+      @media print {
+        @page { size: A4 landscape; margin: 14mm; }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Звіт по засобах</h1>
+    <p class="meta">Сформовано: ${escapeHtml(generatedAt)} · Всього записів: ${records.length}</p>
+    ${sections}
+  </body>
+</html>`);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
+elements.reportButton.addEventListener("click", openReportModal);
+elements.cancelReportButton.addEventListener("click", closeReportModal);
+
+elements.reportModal.addEventListener("click", (event) => {
+  if (event.target === elements.reportModal) closeReportModal();
+});
+
+elements.reportSelectAll.addEventListener("change", () => {
+  reportCategoryCheckboxes().forEach((box) => {
+    box.checked = elements.reportSelectAll.checked;
+  });
+});
+
+reportCategoryCheckboxes().forEach((box) => {
+  box.addEventListener("change", () => {
+    elements.reportSelectAll.checked = reportCategoryCheckboxes().every((item) => item.checked);
+  });
+});
+
+elements.reportForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const selected = reportCategoryCheckboxes()
+    .filter((box) => box.checked)
+    .map((box) => box.value);
+
+  if (!selected.length) {
+    setMessage(elements.reportModalMessage, "Оберіть хоча б одну категорію.", true);
+    return;
+  }
+
+  const { data, error } = await db
+    .from("workflow_reb_far")
+    .select("*")
+    .in("variant", selected)
+    .order("variant")
+    .order("name");
+
+  if (error) {
+    setMessage(elements.reportModalMessage, error.message, true);
+    return;
+  }
+
+  printReport(data || [], selected);
+  closeReportModal();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeReportModal();
 });
 
 loadSession();

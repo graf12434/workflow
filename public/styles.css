@@ -559,7 +559,15 @@ td {
   color: var(--text);
   font-size: 0.9rem;
   max-width: 320px;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+
+td.note-cell {
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help;
 }
 
 tbody tr:hover td {
@@ -669,6 +677,30 @@ tbody tr:hover td {
 
 .modal-panel {
   width: min(420px, 100%);
+}
+
+.checkbox-option {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  text-transform: none;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  color: var(--text);
+}
+
+.checkbox-option input[type="checkbox"] {
+  width: auto;
+  min-height: auto;
+  accent-color: var(--khaki);
+}
+
+.report-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
 }
 
 .modal-actions {

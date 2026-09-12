@@ -279,7 +279,7 @@ function renderRecords() {
         <td>${escapeHtml(record.serial_number)}</td>
         <td>${escapeHtml(ownershipLabels[record.ownership] || record.ownership)}</td>
         <td><span class="status-pill ${record.status}">${escapeHtml(statusLabels[record.status] || record.status)}</span></td>
-        <td>${escapeHtml(record.note || "")}</td>
+        <td class="note-cell" title="${escapeHtml(record.note || "")}">${escapeHtml(record.note || "")}</td>
         ${actions}
       </tr>`;
     })

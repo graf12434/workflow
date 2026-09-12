@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-17" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-19" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -32,6 +32,7 @@
           <a id="otherMenuButton" class="ghost-button" href="./other.html" hidden>Інше</a>
         </div>
         <div class="user-panel">
+          <button id="reportButton" class="ghost-button" type="button" hidden>Звіт</button>
           <span id="connectionStatus" class="status-dot offline">Offline</span>
           <span id="userRole" class="role-badge">guest</span>
           <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
@@ -217,9 +218,36 @@
         </section>
       </main>
 
+      <div id="reportModal" class="modal-overlay" hidden>
+        <form id="reportForm" class="panel entry-form modal-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">report</p>
+              <h2>Звіт по засобах</h2>
+            </div>
+          </div>
+          <label class="checkbox-option wide">
+            <input id="reportSelectAll" type="checkbox" checked />
+            Обрати всі категорії
+          </label>
+          <div class="wide report-categories">
+            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕБ" checked /> Засоби РЕБ</label>
+            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕР" checked /> Засоби РЕР</label>
+            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="АДР" checked /> АДР</label>
+            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Спец обладнання" checked /> Спец обладнання</label>
+            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Запчастини" checked /> Запчастини</label>
+            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Інше" checked /> Інше</label>
+          </div>
+          <div class="modal-actions wide">
+            <button id="cancelReportButton" class="ghost-button" type="button">Скасувати</button>
+            <button class="primary-button" type="submit">Друкувати</button>
+          </div>
+          <p id="reportModalMessage" class="message wide"></p>
+        </form>
+      </div>
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./app.js?v=20260831-13"></script>
+    <script src="./app.js?v=20260831-15"></script>
   </body>
 </html>
