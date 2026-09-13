@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-19" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-20" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -24,12 +24,6 @@
             <p class="eyebrow">Tactical dashboard // WF-01</p>
             <h1>Workflow</h1>
           </div>
-          <a id="rebMenuButton" class="ghost-button" href="./reb.html" hidden>Засоби РЕБ</a>
-          <a id="rerMenuButton" class="ghost-button" href="./rer.html" hidden>Засоби РЕР</a>
-          <a id="adrMenuButton" class="ghost-button" href="./adr.html" hidden>АДР</a>
-          <a id="specMenuButton" class="ghost-button" href="./spec.html" hidden>Спец обладнання</a>
-          <a id="partsMenuButton" class="ghost-button" href="./parts.html" hidden>Запчастини</a>
-          <a id="otherMenuButton" class="ghost-button" href="./other.html" hidden>Інше</a>
         </div>
         <div class="user-panel">
           <button id="reportButton" class="ghost-button" type="button" hidden>Звіт</button>
@@ -38,6 +32,15 @@
           <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
         </div>
       </header>
+
+      <nav class="page-nav">
+        <a id="rebMenuButton" class="ghost-button" href="./reb.html" hidden>Засоби РЕБ</a>
+        <a id="rerMenuButton" class="ghost-button" href="./rer.html" hidden>Засоби РЕР</a>
+        <a id="adrMenuButton" class="ghost-button" href="./adr.html" hidden>АДР</a>
+        <a id="specMenuButton" class="ghost-button" href="./spec.html" hidden>Спец обладнання</a>
+        <a id="partsMenuButton" class="ghost-button" href="./parts.html" hidden>Запчастини</a>
+        <a id="otherMenuButton" class="ghost-button" href="./other.html" hidden>Інше</a>
+      </nav>
 
       <main>
         <section id="authView" class="auth-grid">
@@ -248,6 +251,6 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./app.js?v=20260831-15"></script>
+    <script src="./app.js?v=20260831-16"></script>
   </body>
 </html>

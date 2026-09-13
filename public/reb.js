@@ -55,7 +55,11 @@ const elements = {
   noAccessMessage: $("noAccessMessage"),
   entryForm: $("entryForm"),
   logoutButton: $("logoutButton"),
-  backToJournalButton: $("backToJournalButton"),
+  rerMenuButton: $("rerMenuButton"),
+  adrMenuButton: $("adrMenuButton"),
+  specMenuButton: $("specMenuButton"),
+  partsMenuButton: $("partsMenuButton"),
+  otherMenuButton: $("otherMenuButton"),
   resetFormButton: $("resetFormButton"),
   nameSelect: $("name"),
   addAssetButton: $("addAssetButton"),
@@ -227,6 +231,11 @@ function renderPermissions() {
   elements.entryForm.classList.toggle("hidden-for-role", !canCreate);
   elements.addAssetButton.hidden = roleName() !== "admin";
   elements.editAssetButton.hidden = roleName() !== "admin";
+  elements.rerMenuButton.hidden = !canCreate;
+  elements.adrMenuButton.hidden = !canCreate;
+  elements.specMenuButton.hidden = !canCreate;
+  elements.partsMenuButton.hidden = !canCreate;
+  elements.otherMenuButton.hidden = !canCreate;
   document.querySelectorAll(".admin-only").forEach((node) => {
     node.classList.toggle("hidden-for-role", !canEdit && !canDelete);
   });
@@ -542,10 +551,6 @@ elements.resetFormButton.addEventListener("click", resetForm);
 
 elements.logoutButton.addEventListener("click", async () => {
   await db.auth.signOut();
-  window.location.href = "./index.html";
-});
-
-elements.backToJournalButton.addEventListener("click", () => {
   window.location.href = "./index.html";
 });
 

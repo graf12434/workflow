@@ -99,6 +99,13 @@ textarea {
   opacity: 0.55;
 }
 
+.page-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 0 4px;
+}
+
 .brand {
   display: flex;
   align-items: center;
