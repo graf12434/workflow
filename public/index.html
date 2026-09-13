@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-22" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-24" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -26,14 +26,31 @@
           </div>
         </div>
         <div class="user-panel">
-          <button id="reportButton" class="ghost-button" type="button" hidden>Звіт</button>
+          <span id="dateBadge" class="role-badge date-badge"></span>
           <span id="connectionStatus" class="status-dot offline">Offline</span>
           <span id="userRole" class="role-badge">guest</span>
           <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
         </div>
       </header>
+      <script>
+        (function () {
+          var el = document.getElementById("dateBadge");
+          if (!el) return;
+          var days = ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+          var now = new Date();
+          var dd = String(now.getDate()).padStart(2, "0");
+          var mm = String(now.getMonth() + 1).padStart(2, "0");
+          var wd = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+          var dayNum = wd.getUTCDay() || 7;
+          wd.setUTCDate(wd.getUTCDate() + 4 - dayNum);
+          var yearStart = new Date(Date.UTC(wd.getUTCFullYear(), 0, 1));
+          var week = Math.ceil(((wd - yearStart) / 86400000 + 1) / 7);
+          el.textContent = days[now.getDay()] + ", " + dd + "." + mm + "." + now.getFullYear() + " · " + week + " тиж.";
+        })();
+      </script>
 
       <nav class="page-nav">
+        <button id="reportButton" class="ghost-button" type="button" hidden>Звіт</button>
         <a id="rebMenuButton" class="ghost-button" href="./reb.html" hidden>Засоби РЕБ</a>
         <a id="rerMenuButton" class="ghost-button" href="./rer.html" hidden>Засоби РЕР</a>
         <a id="adrMenuButton" class="ghost-button" href="./adr.html" hidden>АДР</a>
@@ -242,15 +259,39 @@
             <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Інше" checked /> Інше</label>
           </div>
           <div class="modal-actions wide">
-            <button id="cancelReportButton" class="ghost-button" type="button">Скасувати</button>
             <button class="primary-button" type="submit">Друкувати</button>
           </div>
+
+          <div class="modal-divider wide"></div>
+
+          <div class="wide">
+            <p class="eyebrow">журнал подій</p>
+            <h2>Звіт по журналу за період</h2>
+          </div>
+          <label>
+            З дати
+            <input id="reportFromDate" type="date" />
+          </label>
+          <label>
+            По дату
+            <input id="reportToDate" type="date" />
+          </label>
+          <div class="modal-actions wide">
+            <button id="printJournalReportButton" class="primary-button" type="button">Друкувати журнал</button>
+          </div>
+
+          <div class="modal-divider wide"></div>
+
+          <div class="modal-actions wide">
+            <button id="cancelReportButton" class="ghost-button" type="button">Скасувати</button>
+          </div>
+
           <p id="reportModalMessage" class="message wide"></p>
         </form>
       </div>
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./app.js?v=20260831-16"></script>
+    <script src="./app.js?v=20260831-17"></script>
   </body>
 </html>

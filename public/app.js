@@ -52,6 +52,9 @@ const elements = {
   reportSelectAll: $("reportSelectAll"),
   cancelReportButton: $("cancelReportButton"),
   reportModalMessage: $("reportModalMessage"),
+  reportFromDate: $("reportFromDate"),
+  reportToDate: $("reportToDate"),
+  printJournalReportButton: $("printJournalReportButton"),
   connectionStatus: $("connectionStatus"),
   userRole: $("userRole"),
   recordsBody: $("recordsBody"),
@@ -671,6 +674,8 @@ function reportCategoryCheckboxes() {
 
 function openReportModal() {
   setMessage(elements.reportModalMessage, "");
+  elements.reportFromDate.value = "";
+  elements.reportToDate.value = "";
   elements.reportModal.hidden = false;
 }
 
@@ -747,6 +752,71 @@ function printReport(records, selectedVariants) {
   printWindow.print();
 }
 
+function printJournalReport(records, fromValue, toValue) {
+  const printWindow = window.open("", "_blank");
+
+  if (!printWindow) {
+    setMessage(elements.reportModalMessage, "Дозвольте спливаючі вікна в браузері, щоб сформувати звіт.", true);
+    return;
+  }
+
+  const generatedAt = new Date().toLocaleString("uk-UA");
+  const periodLabel =
+    fromValue || toValue
+      ? `Період: ${fromValue ? formatDate(fromValue) : "…"} – ${toValue ? formatDate(toValue) : "…"}`
+      : "Період: увесь журнал";
+
+  const rowsHtml = records.length
+    ? records
+        .map(
+          (record) => `
+        <tr>
+          <td>${escapeHtml(formatDate(record.date))}</td>
+          <td>${escapeHtml(record.asset)}</td>
+          <td>${escapeHtml(record.name)}</td>
+          <td>${escapeHtml(record.serial_number)}</td>
+          <td>${escapeHtml(record.area)}</td>
+          <td>${escapeHtml(actionLabel(record.action_type))}</td>
+          <td>${escapeHtml(record.note || "")}</td>
+        </tr>`
+        )
+        .join("")
+    : '<tr><td colspan="7">Немає записів за обраний період</td></tr>';
+
+  printWindow.document.write(`<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Звіт по журналу подій</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; color: #111; padding: 24px; }
+      h1 { font-size: 20px; margin: 0 0 4px; }
+      p.meta { color: #555; font-size: 12px; margin: 0 0 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+      th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; }
+      th { background: #eee; }
+      @media print {
+        @page { size: A4 landscape; margin: 14mm; }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Звіт по журналу подій</h1>
+    <p class="meta">Сформовано: ${escapeHtml(generatedAt)} · ${escapeHtml(periodLabel)} · Всього записів: ${records.length}</p>
+    <table>
+      <thead>
+        <tr><th>Дата</th><th>Засіб</th><th>Назва</th><th>Серійний №</th><th>Район</th><th>Дія</th><th>Примітка</th></tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+  </body>
+</html>`);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
 elements.reportButton.addEventListener("click", openReportModal);
 elements.cancelReportButton.addEventListener("click", closeReportModal);
 
@@ -791,6 +861,27 @@ elements.reportForm.addEventListener("submit", async (event) => {
   }
 
   printReport(data || [], selected);
+  closeReportModal();
+});
+
+elements.printJournalReportButton.addEventListener("click", () => {
+  const fromValue = elements.reportFromDate.value;
+  const toValue = elements.reportToDate.value;
+
+  if (fromValue && toValue && fromValue > toValue) {
+    setMessage(elements.reportModalMessage, "Дата «з» не може бути пізніше дати «по».", true);
+    return;
+  }
+
+  const from = fromValue ? parseDate(fromValue) : null;
+  const to = toValue ? parseDate(toValue) : null;
+
+  const filtered = state.records.filter((record) => {
+    const recordDate = parseDate(record.date);
+    return (!from || recordDate >= from) && (!to || recordDate <= to);
+  });
+
+  printJournalReport(filtered, fromValue, toValue);
   closeReportModal();
 });
 
