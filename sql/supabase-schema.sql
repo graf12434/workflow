@@ -3,6 +3,7 @@ create extension if not exists "pgcrypto";
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
+  display_name text,
   role text not null default 'viewer' check (role in ('admin', 'operator', 'viewer')),
   created_at timestamptz not null default now()
 );
@@ -75,16 +76,17 @@ alter table public.workflow_records enable row level security;
 
 drop policy if exists "profiles_select_own_or_admin" on public.profiles;
 drop policy if exists "profiles_select_own" on public.profiles;
+drop policy if exists "profiles_select_authenticated" on public.profiles;
 drop policy if exists "profiles_update_admin" on public.profiles;
 drop policy if exists "records_select_authenticated" on public.workflow_records;
 drop policy if exists "records_insert_operator_admin" on public.workflow_records;
 drop policy if exists "records_update_operator_admin" on public.workflow_records;
 drop policy if exists "records_delete_admin" on public.workflow_records;
 
-create policy "profiles_select_own"
+create policy "profiles_select_authenticated"
 on public.profiles for select
 to authenticated
-using (id = auth.uid());
+using (true);
 
 create policy "records_select_authenticated"
 on public.workflow_records for select
@@ -109,6 +111,56 @@ create policy "records_delete_admin"
 on public.workflow_records for delete
 to authenticated
 using (public.get_my_role() = 'admin');
+
+create table if not exists public.workflow_records_history (
+  id uuid primary key default gen_random_uuid(),
+  record_id uuid not null,
+  action text not null check (action in ('created', 'updated', 'deleted')),
+  changed_by uuid references public.profiles(id) on delete set null,
+  changed_at timestamptz not null default now(),
+  snapshot jsonb not null
+);
+
+create index if not exists workflow_records_history_record_idx
+  on public.workflow_records_history(record_id, changed_at desc);
+
+create or replace function public.log_workflow_records_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if (tg_op = 'INSERT') then
+    insert into public.workflow_records_history (record_id, action, changed_by, snapshot)
+    values (new.id, 'created', auth.uid(), to_jsonb(new));
+    return new;
+  elsif (tg_op = 'UPDATE') then
+    insert into public.workflow_records_history (record_id, action, changed_by, snapshot)
+    values (new.id, 'updated', auth.uid(), to_jsonb(new));
+    return new;
+  elsif (tg_op = 'DELETE') then
+    insert into public.workflow_records_history (record_id, action, changed_by, snapshot)
+    values (old.id, 'deleted', auth.uid(), to_jsonb(old));
+    return old;
+  end if;
+  return null;
+end;
+$$;
+
+drop trigger if exists workflow_records_log_changes on public.workflow_records;
+create trigger workflow_records_log_changes
+after insert or update or delete on public.workflow_records
+for each row execute function public.log_workflow_records_change();
+
+alter table public.workflow_records_history enable row level security;
+
+drop policy if exists "records_history_select_authenticated" on public.workflow_records_history;
+
+create policy "records_history_select_authenticated"
+on public.workflow_records_history for select
+to authenticated
+using (true);
 
 create table if not exists public.workflow_assets (
   id uuid primary key default gen_random_uuid(),

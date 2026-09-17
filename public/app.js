@@ -59,6 +59,9 @@ const elements = {
   reportFromDate: $("reportFromDate"),
   reportToDate: $("reportToDate"),
   printJournalReportButton: $("printJournalReportButton"),
+  recordHistoryModal: $("recordHistoryModal"),
+  recordHistoryList: $("recordHistoryList"),
+  closeRecordHistoryButton: $("closeRecordHistoryButton"),
   connectionStatus: $("connectionStatus"),
   userRole: $("userRole"),
   recordsBody: $("recordsBody"),
@@ -107,6 +110,11 @@ function setMessage(target, text, isError = false) {
   target.style.color = isError ? "var(--red)" : "var(--khaki)";
 }
 
+function displayName(profile) {
+  if (!profile) return "Невідомий користувач";
+  return profile.display_name || profile.email || "Невідомий користувач";
+}
+
 const actionLabels = {
   deploy: "Розгортання",
   recover: "Згортання",
@@ -114,6 +122,12 @@ const actionLabels = {
   repair: "Ремонт",
   maintenance: "Обслуговування",
   destroyed: "Знищено"
+};
+
+const historyActionLabels = {
+  created: "Створено",
+  updated: "Оновлено",
+  deleted: "Видалено"
 };
 
 const actionToRebFarStatus = {
@@ -479,6 +493,7 @@ function renderRecords() {
             <div class="row-actions">
               ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}">&#9998;</button>` : ""}
               ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}">&#10005;</button>` : ""}
+              <button class="icon-button" type="button" title="Інформація" data-info="${record.id}">&#8505;</button>
             </div>
           </td>`
         : '<td class="admin-only hidden-for-role"></td>';
@@ -616,6 +631,52 @@ async function deleteRecord(id) {
   await loadRecords();
 }
 
+async function openRecordHistory(id) {
+  elements.recordHistoryModal.hidden = false;
+  elements.recordHistoryList.innerHTML = '<p class="empty-state">Завантаження…</p>';
+
+  const { data, error } = await db
+    .from("workflow_records_history")
+    .select("action, changed_at, profiles(email, display_name)")
+    .eq("record_id", id)
+    .order("changed_at", { ascending: true });
+
+  if (error) {
+    elements.recordHistoryList.innerHTML = `<p class="empty-state">${escapeHtml(error.message)}</p>`;
+    return;
+  }
+
+  if (!data || !data.length) {
+    elements.recordHistoryList.innerHTML = '<p class="empty-state">Історію не знайдено.</p>';
+    return;
+  }
+
+  elements.recordHistoryList.innerHTML = data
+    .map((entry) => {
+      const who = displayName(entry.profiles);
+      const when = new Date(entry.changed_at).toLocaleString("uk-UA");
+      return `
+        <div class="history-entry">
+          <div class="history-entry-head">
+            <span class="action-pill ${entry.action}">${escapeHtml(historyActionLabels[entry.action] || entry.action)}</span>
+            <time>${escapeHtml(when)}</time>
+          </div>
+          <div class="history-entry-user">${escapeHtml(who)}</div>
+        </div>`;
+    })
+    .join("");
+}
+
+function closeRecordHistory() {
+  elements.recordHistoryModal.hidden = true;
+}
+
+elements.closeRecordHistoryButton.addEventListener("click", closeRecordHistory);
+
+elements.recordHistoryModal.addEventListener("click", (event) => {
+  if (event.target === elements.recordHistoryModal) closeRecordHistory();
+});
+
 elements.loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -686,9 +747,11 @@ elements.areaSelect.addEventListener("change", updateAreaTitle);
 elements.recordsBody.addEventListener("click", (event) => {
   const editId = event.target.dataset.edit;
   const deleteId = event.target.dataset.delete;
+  const infoId = event.target.dataset.info;
 
   if (editId) editRecord(editId);
   if (deleteId) deleteRecord(deleteId);
+  if (infoId) openRecordHistory(infoId);
 });
 
 const reportVariantLabels = {
@@ -927,7 +990,10 @@ elements.printJournalReportButton.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeReportModal();
+  if (event.key === "Escape") {
+    closeReportModal();
+    closeRecordHistory();
+  }
 });
 
 loadSession();

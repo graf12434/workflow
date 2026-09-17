@@ -631,6 +631,56 @@ tbody tr:hover td {
   background: rgba(184, 103, 42, 0.12);
 }
 
+.action-pill.created {
+  color: var(--green);
+  background: rgba(92, 138, 74, 0.1);
+}
+
+.action-pill.updated {
+  color: var(--amber);
+  background: rgba(217, 140, 43, 0.12);
+}
+
+.action-pill.deleted {
+  color: var(--red);
+  background: rgba(184, 72, 58, 0.1);
+}
+
+.record-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 4px 2px;
+}
+
+.history-entry {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: var(--panel);
+}
+
+.history-entry-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.history-entry-head time {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.history-entry-user {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
 .action-pill.destroyed {
   color: var(--red);
   background: rgba(184, 72, 58, 0.1);
