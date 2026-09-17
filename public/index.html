@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-26" />
+    <link rel="stylesheet" href="./styles.css?v=20260831-27" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -125,11 +125,12 @@
                 <input id="recordDate" type="date" required />
               </label>
               <label>
-                РЕБ/РЕР
+                ЗАСОБИ
                 <select id="assetVariantFilter">
                   <option value="">Усі</option>
                   <option value="РЕБ">РЕБ</option>
                   <option value="РЕР">РЕР</option>
+                  <option value="Інше">Інше</option>
                 </select>
               </label>
               <label class="wide">
@@ -214,7 +215,7 @@
                 </div>
               </div>
 
-              <div class="table-wrap">
+              <div class="table-wrap table-wrap-journal">
                 <table>
                   <thead>
                     <tr>
@@ -311,6 +312,6 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./app.js?v=20260831-20"></script>
+    <script src="./app.js?v=20260831-21"></script>
   </body>
 </html>

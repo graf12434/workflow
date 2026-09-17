@@ -305,7 +305,7 @@ function findEquipmentBySerial(value) {
 }
 
 function applyEquipmentMatch(match) {
-  elements.assetVariantFilter.value = ["РЕБ", "РЕР"].includes(match.variant) ? match.variant : "";
+  elements.assetVariantFilter.value = ["РЕБ", "РЕР", "Інше"].includes(match.variant) ? match.variant : "";
   renderAssetOptions(match.name);
   ensureAssetOption(match.name);
   elements.assetSelect.value = match.name;

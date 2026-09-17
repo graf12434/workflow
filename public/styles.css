@@ -539,6 +539,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   max-height: 300px;
 }
 
+.table-wrap-journal {
+  max-height: 340px;
+}
+
 table {
   width: 100%;
   min-width: 980px;
