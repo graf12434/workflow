@@ -15,7 +15,8 @@ const state = {
   records: [],
   filteredRecords: [],
   assets: [],
-  areas: []
+  areas: [],
+  equipment: []
 };
 
 const roles = {
@@ -36,6 +37,9 @@ const elements = {
   resetFormButton: $("resetFormButton"),
   assetSelect: $("asset"),
   assetVariantFilter: $("assetVariantFilter"),
+  nameInput: $("name"),
+  serialNumberInput: $("serialNumber"),
+  noteInput: $("note"),
   areaSelect: $("area"),
   addAreaButton: $("addAreaButton"),
   rebMenuButton: $("rebMenuButton"),
@@ -108,6 +112,7 @@ const actionLabels = {
   recover: "Згортання",
   relocate: "Переміщення",
   repair: "Ремонт",
+  maintenance: "Обслуговування",
   destroyed: "Знищено"
 };
 
@@ -157,6 +162,7 @@ async function loadSession() {
     await loadProfile();
     await loadAssets();
     await loadAreas();
+    await loadEquipment();
     await loadRecords();
   }
 
@@ -265,6 +271,36 @@ async function loadAreas() {
 
   state.areas = data || [];
   renderAreaOptions(elements.areaSelect.value);
+}
+
+async function loadEquipment() {
+  const { data, error } = await db.from("workflow_reb_far").select("name, serial_number, variant, note");
+
+  if (error) {
+    setMessage(elements.formMessage, error.message, true);
+    return;
+  }
+
+  state.equipment = data || [];
+}
+
+function findEquipmentBySerial(value) {
+  const needle = value.trim().toLowerCase();
+  if (!needle) return null;
+  return state.equipment.find((item) => (item.serial_number || "").trim().toLowerCase() === needle) || null;
+}
+
+function applyEquipmentMatch(match) {
+  elements.assetVariantFilter.value = ["РЕБ", "РЕР"].includes(match.variant) ? match.variant : "";
+  renderAssetOptions(match.name);
+  ensureAssetOption(match.name);
+  elements.assetSelect.value = match.name;
+  updateAssetTitle();
+
+  if (!elements.nameInput.value.trim()) elements.nameInput.value = match.name;
+  if (!elements.noteInput.value.trim() && match.note) elements.noteInput.value = match.note;
+
+  setMessage(elements.formMessage, `Знайдено засіб: ${match.name} (${match.variant})`);
 }
 
 function renderAreaOptions(selectedValue = "") {
@@ -619,6 +655,11 @@ elements.resetFormButton.addEventListener("click", resetForm);
 
 elements.assetSelect.addEventListener("change", updateAssetTitle);
 elements.assetVariantFilter.addEventListener("change", () => renderAssetOptions());
+
+elements.serialNumberInput.addEventListener("input", () => {
+  const match = findEquipmentBySerial(elements.serialNumberInput.value);
+  if (match) applyEquipmentMatch(match);
+});
 
 elements.addAreaButton.addEventListener("click", async () => {
   const input = window.prompt("Назва нового району:");

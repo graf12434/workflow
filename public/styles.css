@@ -626,6 +626,11 @@ tbody tr:hover td {
   background: rgba(156, 107, 62, 0.12);
 }
 
+.action-pill.maintenance {
+  color: var(--khaki);
+  background: rgba(184, 103, 42, 0.12);
+}
+
 .action-pill.destroyed {
   color: var(--red);
   background: rgba(184, 72, 58, 0.1);
