@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260929-8" />
+    <link rel="stylesheet" href="./styles.css?v=20260929-10" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -245,8 +245,8 @@
                   <option value="maintenance">Обслуговування</option>
                   <option value="destroyed">Знищено</option>
                 </select>
-                <input id="fromDate" type="date" />
-                <input id="toDate" type="date" />
+                <input id="fromDate" type="date" placeholder="З дати" />
+                <input id="toDate" type="date" placeholder="По дату" />
               </div>
 
               <div class="intel-strip">
@@ -347,7 +347,7 @@
       </div>
 
       <div id="recordHistoryModal" class="modal-overlay" hidden>
-        <div class="panel modal-panel">
+        <div class="panel modal-panel history-panel">
           <div class="section-head">
             <div>
               <p class="eyebrow">Історія</p>
@@ -366,6 +366,7 @@
 
     <script src="./supabase-config.js?v=20260831-6"></script>
     <script src="./print-kit.js?v=20260929-1"></script>
+    <script src="./date-picker.js?v=20260929-1"></script>
     <script src="./app.js?v=20260929-3"></script>
     <script src="./pill-nav.js?v=20260929-2"></script>
   </body>
