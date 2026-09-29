@@ -26,6 +26,8 @@ const roles = {
   guest: { canCreate: false, canEdit: false, canDelete: false }
 };
 
+const roleLabels = { admin: "Адміністратор", operator: "Оператор", viewer: "Перегляд", guest: "Гість" };
+
 const $ = (id) => document.getElementById(id);
 
 const elements = {
@@ -84,7 +86,7 @@ function normalizeRole(role) {
 }
 
 function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+  return localISO(new Date());
 }
 
 function formatDate(value) {
@@ -95,14 +97,6 @@ function formatDate(value) {
 function parseDate(value) {
   const [year, month, day] = value.split("-").map(Number);
   return new Date(year, month - 1, day);
-}
-
-function startOfWeek(date) {
-  const result = new Date(date);
-  const day = (result.getDay() + 6) % 7;
-  result.setDate(result.getDate() - day);
-  result.setHours(0, 0, 0, 0);
-  return result;
 }
 
 function setMessage(target, text, isError = false) {
@@ -152,7 +146,7 @@ function escapeHtml(value = "") {
 }
 
 function setConnected(isConnected) {
-  elements.connectionStatus.textContent = isConnected ? "Online" : "Offline";
+  elements.connectionStatus.textContent = isConnected ? "Онлайн" : "Офлайн";
   elements.connectionStatus.classList.toggle("online", isConnected);
   elements.connectionStatus.classList.toggle("offline", !isConnected);
 }
@@ -165,12 +159,18 @@ async function loadSession() {
       "Додайте URL та anon key у supabase-config.js, потім оновіть сторінку.",
       true
     );
+    renderAuthState();
     return;
   }
 
   setConnected(true);
-  const { data } = await db.auth.getSession();
-  state.user = data.session?.user || null;
+  try {
+    const { data } = await db.auth.getSession();
+    state.user = data.session?.user || null;
+  } catch (error) {
+    state.user = null;
+    setMessage(elements.authMessage, error.message, true);
+  }
 
   if (state.user) {
     await loadProfile();
@@ -288,7 +288,7 @@ async function loadAreas() {
 }
 
 async function loadEquipment() {
-  const { data, error } = await db.from("workflow_reb_far").select("name, serial_number, variant, note");
+  const { data, error } = await db.from("workflow_reb_far").select("name, serial_number, variant, status, note");
 
   if (error) {
     setMessage(elements.formMessage, error.message, true);
@@ -360,7 +360,7 @@ function renderAuthState() {
   elements.dashboardView.hidden = !signedIn;
   elements.logoutButton.hidden = !signedIn;
   elements.reportButton.hidden = !signedIn;
-  elements.userRole.textContent = roleName();
+  elements.userRole.textContent = roleLabels[roleName()] || roleName();
   $("recordDate").value ||= todayISO();
   renderPermissions();
 }
@@ -409,19 +409,127 @@ function applyFilters() {
   renderDashboard();
 }
 
-function countByPeriod(records, predicate) {
-  const selected = records.filter(predicate);
-  return {
-    total: selected.length,
-    deploy: selected.filter((record) => record.action_type === "deploy").length,
-    recover: selected.filter((record) => record.action_type === "recover").length
-  };
+const equipmentVariants = ["РЕБ", "РЕР", "АДР", "Спец обладнання", "Запчастини", "Інше"];
+
+const equipmentStatuses = [
+  ["in_formation", "В строю"],
+  ["logistics_storage", "Склад логістики"],
+  ["company_storage", "Склад роти"],
+  ["repair", "Ремонт"],
+  ["destroyed", "Знищено"]
+];
+
+const weekdayLabels = ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+
+function localISO(date) {
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${mm}-${dd}`;
 }
 
-function setPeriodMetric(prefix, data) {
-  $(`${prefix}Total`).textContent = data.total;
-  $(`${prefix}Deploy`).textContent = data.deploy;
-  $(`${prefix}Recover`).textContent = data.recover;
+function renderEquipmentStats() {
+  const items = state.equipment;
+  $("equipmentTotal").textContent = items.length;
+
+  const typeCounts = equipmentVariants.map((variant) => [
+    variant,
+    items.filter((item) => item.variant === variant).length
+  ]);
+  const maxType = Math.max(1, ...typeCounts.map(([, count]) => count));
+
+  $("typeBars").innerHTML = typeCounts
+    .map(
+      ([variant, count]) => `
+      <div class="type-bar" title="${escapeHtml(variant)}: ${count}">
+        <span class="type-bar-label">${escapeHtml(variant)}</span>
+        <span class="type-bar-track"><span class="type-bar-fill" style="--value: ${(count / maxType) * 100}%"></span></span>
+        <b class="type-bar-value">${count}</b>
+      </div>`
+    )
+    .join("");
+
+  const statusCounts = equipmentStatuses.map(([key, label]) => ({
+    key,
+    label,
+    count: items.filter((item) => item.status === key).length
+  }));
+  const inService = statusCounts[0].count;
+
+  $("inServiceTotal").textContent = inService;
+  $("inServiceShare").textContent = items.length
+    ? `${Math.round((inService / items.length) * 100)}% від усіх`
+    : "немає даних";
+
+  $("statusBar").innerHTML = statusCounts
+    .filter((status) => status.count)
+    .map(
+      (status) =>
+        `<span class="status-seg ${status.key}" style="flex-grow: ${status.count}" title="${status.label}: ${status.count}"></span>`
+    )
+    .join("");
+
+  $("statusLegend").innerHTML = statusCounts
+    .map(
+      (status) =>
+        `<li><span class="status-swatch ${status.key}"></span>${status.label}<b>${status.count}</b></li>`
+    )
+    .join("");
+}
+
+function renderActivityStats() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(date.getDate() - (6 - index));
+    const key = localISO(date);
+    return { date, key, count: state.records.filter((record) => record.date === key).length };
+  });
+
+  const weekKeys = new Set(days.map((day) => day.key));
+  const weekRecords = state.records.filter((record) => weekKeys.has(record.date));
+
+  const prevStart = new Date(today);
+  prevStart.setDate(prevStart.getDate() - 13);
+  const prevEnd = new Date(today);
+  prevEnd.setDate(prevEnd.getDate() - 7);
+  const prevCount = state.records.filter((record) => {
+    const date = parseDate(record.date);
+    return date >= prevStart && date <= prevEnd;
+  }).length;
+
+  const diff = weekRecords.length - prevCount;
+  const trend = $("weekWorkTrend");
+  trend.className = `trend ${diff > 0 ? "trend--up" : diff < 0 ? "trend--down" : ""}`;
+  trend.innerHTML = diff
+    ? `<b>${diff > 0 ? "↗ +" : "↘ "}${diff}</b> до попередніх 7 днів`
+    : "як і попередні 7 днів";
+
+  $("weekWorkTotal").textContent = weekRecords.length;
+  $("todayTotal").textContent = days[6].count;
+
+  const maxDay = Math.max(1, ...days.map((day) => day.count));
+  $("activityChart").innerHTML = days
+    .map(
+      (day, index) => `
+      <div class="activity-col${index === 6 ? " is-today" : ""}${day.count ? "" : " is-empty"}" title="${formatDate(day.key)}: ${day.count}">
+        <span class="activity-value">${day.count}</span>
+        <span class="activity-bar" style="--value: ${day.count / maxDay}"></span>
+        <span class="activity-day">${weekdayLabels[day.date.getDay()]}</span>
+      </div>`
+    )
+    .join("");
+
+  const actionCounts = Object.keys(actionLabels)
+    .map((key) => [key, weekRecords.filter((record) => record.action_type === key).length])
+    .filter(([, count]) => count);
+
+  $("actionChips").innerHTML = actionCounts.length
+    ? actionCounts
+        .map(([key, count]) => `<span class="action-pill ${key}">${actionLabel(key)} · ${count}</span>`)
+        .join("")
+    : '<span class="stat-empty">Немає робіт за тиждень</span>';
 }
 
 function activeSerialCount(records) {
@@ -447,28 +555,8 @@ function mostFrequent(records, key) {
 }
 
 function renderDashboard() {
-  const now = new Date();
-  const today = todayISO();
-  const weekStart = startOfWeek(now);
-  const month = now.getMonth();
-  const year = now.getFullYear();
-
-  setPeriodMetric(
-    "day",
-    countByPeriod(state.records, (record) => record.date === today)
-  );
-  setPeriodMetric(
-    "week",
-    countByPeriod(state.records, (record) => parseDate(record.date) >= weekStart)
-  );
-  setPeriodMetric(
-    "month",
-    countByPeriod(state.records, (record) => {
-      const date = parseDate(record.date);
-      return date.getMonth() === month && date.getFullYear() === year;
-    })
-  );
-  setPeriodMetric("all", countByPeriod(state.records, () => true));
+  renderEquipmentStats();
+  renderActivityStats();
 
   $("activeTotal").textContent = activeSerialCount(state.records);
   $("topArea").textContent = mostFrequent(state.filteredRecords, "area");
@@ -589,6 +677,7 @@ async function saveRecord(event) {
     const newStatus = actionToRebFarStatus[payload.action_type];
     if (newStatus) {
       await db.from("workflow_reb_far").update({ status: newStatus }).eq("id", rebFarMatchId);
+      await loadEquipment();
     }
   }
 
@@ -808,7 +897,7 @@ function printReport(records, selectedVariants) {
             <td>${escapeHtml(record.name)}</td>
             <td>${escapeHtml(record.serial_number)}</td>
             <td>${escapeHtml(reportOwnershipLabels[record.ownership] || record.ownership)}</td>
-            <td>${escapeHtml(reportStatusLabels[record.status] || record.status)}</td>
+            <td>${PrintKit.badge(`status-${record.status}`, escapeHtml(reportStatusLabels[record.status] || record.status))}</td>
             <td>${escapeHtml(record.note || "")}</td>
           </tr>`
             )
@@ -831,22 +920,10 @@ function printReport(records, selectedVariants) {
   <head>
     <meta charset="UTF-8" />
     <title>Звіт по засобах</title>
-    <style>
-      body { font-family: Arial, Helvetica, sans-serif; color: #111; padding: 24px; }
-      h1 { font-size: 20px; margin: 0 0 4px; }
-      h2 { font-size: 15px; margin: 24px 0 6px; }
-      p.meta { color: #555; font-size: 12px; margin: 0 0 16px; }
-      table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
-      th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; }
-      th { background: #eee; }
-      @media print {
-        @page { size: A4 landscape; margin: 14mm; }
-      }
-    </style>
+    <style>${PrintKit.styles}</style>
   </head>
   <body>
-    <h1>Звіт по засобах</h1>
-    <p class="meta">Сформовано: ${escapeHtml(generatedAt)} · Всього записів: ${records.length}</p>
+    ${PrintKit.header(`Звіт по засобах`, `Сформовано: ${escapeHtml(generatedAt)} · Всього записів: ${records.length}`)}
     ${sections}
   </body>
 </html>`);
@@ -880,7 +957,7 @@ function printJournalReport(records, fromValue, toValue) {
           <td>${escapeHtml(record.name)}</td>
           <td>${escapeHtml(record.serial_number)}</td>
           <td>${escapeHtml(record.area)}</td>
-          <td>${escapeHtml(actionLabel(record.action_type))}</td>
+          <td>${PrintKit.badge(`action-${record.action_type}`, escapeHtml(actionLabel(record.action_type)))}</td>
           <td>${escapeHtml(record.note || "")}</td>
         </tr>`
         )
@@ -892,21 +969,10 @@ function printJournalReport(records, fromValue, toValue) {
   <head>
     <meta charset="UTF-8" />
     <title>Звіт по журналу подій</title>
-    <style>
-      body { font-family: Arial, Helvetica, sans-serif; color: #111; padding: 24px; }
-      h1 { font-size: 20px; margin: 0 0 4px; }
-      p.meta { color: #555; font-size: 12px; margin: 0 0 16px; }
-      table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
-      th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; }
-      th { background: #eee; }
-      @media print {
-        @page { size: A4 landscape; margin: 14mm; }
-      }
-    </style>
+    <style>${PrintKit.styles}</style>
   </head>
   <body>
-    <h1>Звіт по журналу подій</h1>
-    <p class="meta">Сформовано: ${escapeHtml(generatedAt)} · ${escapeHtml(periodLabel)} · Всього записів: ${records.length}</p>
+    ${PrintKit.header(`Звіт по журналу подій`, `Сформовано: ${escapeHtml(generatedAt)} · ${escapeHtml(periodLabel)} · Всього записів: ${records.length}`)}
     <table>
       <thead>
         <tr><th>Дата</th><th>Засіб</th><th>Назва</th><th>Серійний №</th><th>Район</th><th>Дія</th><th>Примітка</th></tr>

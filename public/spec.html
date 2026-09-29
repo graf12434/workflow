@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Workflow — Спец обладнання</title>
-    <link rel="icon" type="image/png" href="./favicon.png?v=20260913-2" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=20260929-1" />
+    <link rel="icon" type="image/png" href="./favicon.png?v=20260929-1" />
+    <link rel="apple-touch-icon" href="./favicon.png?v=20260929-1" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-27" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20260929-8" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -27,8 +29,8 @@
         </div>
         <div class="user-panel">
           <span id="dateBadge" class="role-badge date-badge"></span>
-          <span id="connectionStatus" class="status-dot offline">Offline</span>
-          <span id="userRole" class="role-badge">guest</span>
+          <span id="connectionStatus" class="status-dot offline">Офлайн</span>
+          <span id="userRole" class="role-badge">Гість</span>
           <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
         </div>
       </header>
@@ -49,13 +51,15 @@
         })();
       </script>
 
-      <nav class="page-nav">
-        <a id="journalMenuButton" class="ghost-button" href="./index.html">Журнал</a>
-        <a id="rebMenuButton" class="ghost-button" href="./reb.html" hidden>Засоби РЕБ</a>
-        <a id="rerMenuButton" class="ghost-button" href="./rer.html" hidden>Засоби РЕР</a>
-        <a id="adrMenuButton" class="ghost-button" href="./adr.html" hidden>АДР</a>
-        <a id="partsMenuButton" class="ghost-button" href="./parts.html" hidden>Запчастини</a>
-        <a id="otherMenuButton" class="ghost-button" href="./other.html" hidden>Інше</a>
+      <nav class="page-nav pill-nav" data-pill-nav aria-label="Розділи">
+        <span class="pill-nav-indicator" aria-hidden="true"></span>
+        <a id="journalMenuButton" class="pill-nav-link" href="./index.html">Журнал</a>
+        <a id="rebMenuButton" class="pill-nav-link" href="./reb.html" hidden>Засоби РЕБ</a>
+        <a id="rerMenuButton" class="pill-nav-link" href="./rer.html" hidden>Засоби РЕР</a>
+        <a id="adrMenuButton" class="pill-nav-link" href="./adr.html" hidden>АДР</a>
+        <a class="pill-nav-link is-active" href="./spec.html" aria-current="page">Спец обладнання</a>
+        <a id="partsMenuButton" class="pill-nav-link" href="./parts.html" hidden>Запчастини</a>
+        <a id="otherMenuButton" class="pill-nav-link" href="./other.html" hidden>Інше</a>
       </nav>
 
       <main>
@@ -64,7 +68,7 @@
             <form id="entryForm" class="panel entry-form">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">new asset</p>
+                  <p class="eyebrow">Новий засіб</p>
                   <h2>Додати засіб</h2>
                 </div>
                 <button id="resetFormButton" class="ghost-button" type="button">Очистити</button>
@@ -114,11 +118,18 @@
             <section class="panel operations-panel">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">records</p>
+                  <p class="eyebrow">Облік засобів</p>
                   <h2 id="recordsTitle">Засоби — Спец обладнання</h2>
                 </div>
                 <div class="section-head-actions">
-                  <button id="pdfButton" class="ghost-button" type="button">PDF</button>
+                  <button id="pdfButton" class="ghost-button pdf-button" type="button">
+                    <svg class="pdf-button-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+                      <path d="M14 3v5h5" />
+                      <path d="M12 11v6M9.5 14.5 12 17l2.5-2.5" />
+                    </svg>
+                    PDF
+                  </button>
                 </div>
               </div>
 
@@ -197,7 +208,7 @@
         <form id="assetForm" class="panel entry-form modal-panel">
           <div class="section-head">
             <div>
-              <p class="eyebrow">asset name</p>
+              <p class="eyebrow">Довідник назв</p>
               <h2 id="assetModalTitle">Додати назву засобу</h2>
             </div>
           </div>
@@ -215,6 +226,8 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./spec.js?v=20260831-4"></script>
+    <script src="./print-kit.js?v=20260929-1"></script>
+    <script src="./spec.js?v=20260929-3"></script>
+    <script src="./pill-nav.js?v=20260929-2"></script>
   </body>
 </html>

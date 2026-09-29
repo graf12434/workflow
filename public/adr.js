@@ -35,6 +35,8 @@ const statusLabels = {
   destroyed: "Знищений"
 };
 
+const roleLabels = { admin: "Адміністратор", operator: "Оператор", viewer: "Перегляд", guest: "Гість" };
+
 const $ = (id) => document.getElementById(id);
 
 const elements = {
@@ -98,7 +100,7 @@ function escapeHtml(value = "") {
 }
 
 function setConnected(isConnected) {
-  elements.connectionStatus.textContent = isConnected ? "Online" : "Offline";
+  elements.connectionStatus.textContent = isConnected ? "Онлайн" : "Офлайн";
   elements.connectionStatus.classList.toggle("online", isConnected);
   elements.connectionStatus.classList.toggle("offline", !isConnected);
 }
@@ -131,7 +133,7 @@ async function loadSession() {
   elements.rebFarView.hidden = false;
   elements.noAccessView.hidden = true;
   elements.logoutButton.hidden = false;
-  elements.userRole.textContent = roleName();
+  elements.userRole.textContent = roleLabels[roleName()] || roleName();
   renderPermissions();
   await loadAssets();
   await loadRecords();
@@ -317,7 +319,7 @@ function exportToPdf() {
         <td>${escapeHtml(record.name)}</td>
         <td>${escapeHtml(record.serial_number)}</td>
         <td>${escapeHtml(ownershipLabels[record.ownership] || record.ownership)}</td>
-        <td>${escapeHtml(statusLabels[record.status] || record.status)}</td>
+        <td>${PrintKit.badge(`status-${record.status}`, escapeHtml(statusLabels[record.status] || record.status))}</td>
         <td>${escapeHtml(record.note || "")}</td>
       </tr>`
         )
@@ -329,21 +331,10 @@ function exportToPdf() {
   <head>
     <meta charset="UTF-8" />
     <title>${escapeHtml(printTitle)}</title>
-    <style>
-      body { font-family: Arial, Helvetica, sans-serif; color: #111; padding: 24px; }
-      h1 { font-size: 18px; margin: 0 0 4px; }
-      p.meta { color: #555; font-size: 12px; margin: 0 0 16px; }
-      table { width: 100%; border-collapse: collapse; font-size: 12px; }
-      th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; }
-      th { background: #eee; }
-      @media print {
-        @page { size: A4 landscape; margin: 14mm; }
-      }
-    </style>
+    <style>${PrintKit.styles}</style>
   </head>
   <body>
-    <h1>${escapeHtml(printTitle)}</h1>
-    <p class="meta">Сформовано: ${escapeHtml(generatedAt)} · Записів: ${rows.length}</p>
+    ${PrintKit.header(`${escapeHtml(printTitle)}`, `Сформовано: ${escapeHtml(generatedAt)} · Записів: ${rows.length}`)}
     <table>
       <thead>
         <tr><th>Назва</th><th>Серійний №</th><th>Належність</th><th>Стан</th><th>Примітка</th></tr>

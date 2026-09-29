@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Workflow</title>
-    <link rel="icon" type="image/png" href="./favicon.png?v=20260913-2" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=20260929-1" />
+    <link rel="icon" type="image/png" href="./favicon.png?v=20260929-1" />
+    <link rel="apple-touch-icon" href="./favicon.png?v=20260929-1" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260831-27" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20260929-8" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -21,14 +23,14 @@
             </svg>
           </span>
           <div>
-            <p class="eyebrow">Tactical dashboard // WF-01</p>
+            <p class="eyebrow">Тактична панель // WF-01</p>
             <h1>Workflow</h1>
           </div>
         </div>
         <div class="user-panel">
           <span id="dateBadge" class="role-badge date-badge"></span>
-          <span id="connectionStatus" class="status-dot offline">Offline</span>
-          <span id="userRole" class="role-badge">guest</span>
+          <span id="connectionStatus" class="status-dot offline">Офлайн</span>
+          <span id="userRole" class="role-badge">Гість</span>
           <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
         </div>
       </header>
@@ -49,20 +51,48 @@
         })();
       </script>
 
-      <nav class="page-nav">
-        <button id="reportButton" class="ghost-button" type="button" hidden>Звіт</button>
-        <a id="rebMenuButton" class="ghost-button" href="./reb.html" hidden>Засоби РЕБ</a>
-        <a id="rerMenuButton" class="ghost-button" href="./rer.html" hidden>Засоби РЕР</a>
-        <a id="adrMenuButton" class="ghost-button" href="./adr.html" hidden>АДР</a>
-        <a id="specMenuButton" class="ghost-button" href="./spec.html" hidden>Спец обладнання</a>
-        <a id="partsMenuButton" class="ghost-button" href="./parts.html" hidden>Запчастини</a>
-        <a id="otherMenuButton" class="ghost-button" href="./other.html" hidden>Інше</a>
-      </nav>
+      <div class="page-nav-bar">
+        <nav class="page-nav pill-nav" data-pill-nav aria-label="Розділи">
+          <span class="pill-nav-indicator" aria-hidden="true"></span>
+          <a class="pill-nav-link is-active" href="./index.html" aria-current="page">Журнал</a>
+          <a id="rebMenuButton" class="pill-nav-link" href="./reb.html" hidden>Засоби РЕБ</a>
+          <a id="rerMenuButton" class="pill-nav-link" href="./rer.html" hidden>Засоби РЕР</a>
+          <a id="adrMenuButton" class="pill-nav-link" href="./adr.html" hidden>АДР</a>
+          <a id="specMenuButton" class="pill-nav-link" href="./spec.html" hidden>Спец обладнання</a>
+          <a id="partsMenuButton" class="pill-nav-link" href="./parts.html" hidden>Запчастини</a>
+          <a id="otherMenuButton" class="pill-nav-link" href="./other.html" hidden>Інше</a>
+        </nav>
+        <button id="reportButton" class="ghost-button report-button" type="button" hidden>
+          <svg class="report-button-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="3" width="15" height="18" rx="2" />
+            <path d="M3 7h4M3 12h4M3 17h4" />
+            <path d="M10 8h6M10 12h6M10 16h3" />
+          </svg>
+          Звіт
+        </button>
+      </div>
 
       <main>
-        <section id="authView" class="auth-grid">
+        <section id="authView" class="auth-grid" hidden>
           <div class="auth-copy">
-            <p class="eyebrow">secure access</p>
+            <svg class="auth-art" viewBox="-8 -8 80 80" aria-hidden="true">
+              <g fill="none" stroke="#c8f031" stroke-linecap="round" stroke-linejoin="round">
+                <circle class="auth-ring" cx="32" cy="12" r="12" stroke-width="1" />
+                <circle class="auth-ring auth-ring--late" cx="32" cy="12" r="12" stroke-width="1" />
+                <path class="auth-wave" d="M17.5 16q-5 7 0 14M46.5 16q5 7 0 14" stroke-width="2.2" />
+                <path class="auth-wave auth-wave--outer" d="M12 11.5q-8 11.5 0 23M52 11.5q8 11.5 0 23" stroke-width="2.2" />
+                <path d="M24 38V22M32 38V13M40 38V22" stroke-width="2.2" />
+                <rect x="18" y="38" width="28" height="15" rx="3.5" stroke-width="2.2" />
+              </g>
+              <g fill="#c8f031">
+                <circle cx="24" cy="21" r="2" />
+                <circle class="auth-tip" cx="32" cy="12" r="2.2" />
+                <circle cx="40" cy="21" r="2" />
+                <circle class="auth-led" cx="24" cy="45.5" r="1.7" />
+                <rect x="29" y="44.2" width="12" height="2.6" rx="1.3" opacity="0.6" />
+              </g>
+            </svg>
+            <p class="eyebrow">Захищений доступ</p>
             <h2>Вхід до журналу</h2>
             <p>Авторизовані користувачі можуть вносити записи, переглядати зведення та фільтрувати події за періодами.</p>
           </div>
@@ -81,31 +111,50 @@
         </section>
 
         <section id="dashboardView" hidden>
-          <section class="metric-grid" aria-label="Підсумки">
-            <article class="metric-card">
-              <span>День</span>
-              <strong id="dayTotal">0</strong>
-              <small><b id="dayDeploy">0</b> розг. / <b id="dayRecover">0</b> згорт.</small>
+          <section class="stats-grid" aria-label="Статистика">
+            <article class="panel stat-card">
+              <div class="stat-card-head">
+                <div>
+                  <span class="stat-card-label">Засоби за типами</span>
+                  <strong id="equipmentTotal" class="stat-card-value">0</strong>
+                </div>
+                <span class="stat-card-hint">усього на обліку</span>
+              </div>
+              <div id="typeBars" class="type-bars"></div>
             </article>
-            <article class="metric-card">
-              <span>Тиждень</span>
-              <strong id="weekTotal">0</strong>
-              <small><b id="weekDeploy">0</b> розг. / <b id="weekRecover">0</b> згорт.</small>
+
+            <article class="panel stat-card">
+              <div class="stat-card-head">
+                <div>
+                  <span class="stat-card-label">Стан засобів · в строю</span>
+                  <strong id="inServiceTotal" class="stat-card-value">0</strong>
+                </div>
+                <span id="inServiceShare" class="stat-card-hint">немає даних</span>
+              </div>
+              <div id="statusBar" class="status-bar" aria-hidden="true"></div>
+              <ul id="statusLegend" class="status-legend"></ul>
             </article>
-            <article class="metric-card">
-              <span>Місяць</span>
-              <strong id="monthTotal">0</strong>
-              <small><b id="monthDeploy">0</b> розг. / <b id="monthRecover">0</b> згорт.</small>
+
+            <article class="panel stat-card">
+              <div class="stat-card-head">
+                <div>
+                  <span class="stat-card-label">Роботи за 7 днів</span>
+                  <strong id="weekWorkTotal" class="stat-card-value">0</strong>
+                </div>
+                <span id="weekWorkTrend" class="trend"></span>
+              </div>
+              <div id="activityChart" class="activity-chart"></div>
+              <div id="actionChips" class="action-chips"></div>
             </article>
-            <article class="metric-card alert">
-              <span>Активно</span>
+
+            <article class="metric-card alert stat-card-accent">
+              <span>Розгорнуто зараз</span>
               <strong id="activeTotal">0</strong>
               <small>за останньою дією за серійним номером</small>
-            </article>
-            <article class="metric-card">
-              <span>Весь період</span>
-              <strong id="allTotal">0</strong>
-              <small><b id="allDeploy">0</b> розг. / <b id="allRecover">0</b> згорт.</small>
+              <div class="stat-accent-foot">
+                <span>Записів сьогодні</span>
+                <b id="todayTotal">0</b>
+              </div>
             </article>
           </section>
 
@@ -113,7 +162,7 @@
             <form id="entryForm" class="panel entry-form">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">new record</p>
+                  <p class="eyebrow">Новий запис</p>
                   <h2>Оперативний запис</h2>
                 </div>
                 <button id="resetFormButton" class="ghost-button" type="button">Очистити</button>
@@ -180,7 +229,7 @@
             <section class="panel operations-panel">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">records</p>
+                  <p class="eyebrow">Записи</p>
                   <h2>Журнал подій</h2>
                 </div>
               </div>
@@ -242,54 +291,58 @@
       </main>
 
       <div id="reportModal" class="modal-overlay" hidden>
-        <form id="reportForm" class="panel entry-form modal-panel">
-          <div class="section-head">
+        <form id="reportForm" class="panel modal-panel report-modal">
+          <header class="modal-head">
             <div>
-              <p class="eyebrow">report</p>
-              <h2>Звіт по засобах</h2>
+              <p class="eyebrow">Звіти</p>
+              <h2>Друк звітів</h2>
             </div>
-          </div>
-          <label class="checkbox-option wide">
-            <input id="reportSelectAll" type="checkbox" checked />
-            Обрати всі категорії
-          </label>
-          <div class="wide report-categories">
-            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕБ" checked /> Засоби РЕБ</label>
-            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕР" checked /> Засоби РЕР</label>
-            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="АДР" checked /> АДР</label>
-            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Спец обладнання" checked /> Спец обладнання</label>
-            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Запчастини" checked /> Запчастини</label>
-            <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Інше" checked /> Інше</label>
-          </div>
-          <div class="modal-actions wide">
-            <button class="primary-button" type="submit">Друкувати</button>
-          </div>
+            <button id="cancelReportButton" class="icon-button modal-close" type="button" title="Закрити" aria-label="Закрити">&#10005;</button>
+          </header>
 
-          <div class="modal-divider wide"></div>
+          <section class="modal-section">
+            <div class="modal-section-head">
+              <div>
+                <h3>Звіт по засобах</h3>
+                <p>Оберіть категорії для друку</p>
+              </div>
+              <label class="checkbox-option select-all">
+                <input id="reportSelectAll" type="checkbox" checked />
+                Усі
+              </label>
+            </div>
+            <div class="report-categories">
+              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕБ" checked /> Засоби РЕБ</label>
+              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕР" checked /> Засоби РЕР</label>
+              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="АДР" checked /> АДР</label>
+              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Спец обладнання" checked /> Спец обладнання</label>
+              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Запчастини" checked /> Запчастини</label>
+              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Інше" checked /> Інше</label>
+            </div>
+            <button class="primary-button" type="submit">Друкувати засоби</button>
+          </section>
 
-          <div class="wide">
-            <p class="eyebrow">журнал подій</p>
-            <h2>Звіт по журналу за період</h2>
-          </div>
-          <label>
-            З дати
-            <input id="reportFromDate" type="date" />
-          </label>
-          <label>
-            По дату
-            <input id="reportToDate" type="date" />
-          </label>
-          <div class="modal-actions wide">
+          <section class="modal-section">
+            <div class="modal-section-head">
+              <div>
+                <h3>Звіт по журналу</h3>
+                <p>Події за обраний період</p>
+              </div>
+            </div>
+            <div class="date-range">
+              <label>
+                З дати
+                <input id="reportFromDate" type="date" />
+              </label>
+              <label>
+                По дату
+                <input id="reportToDate" type="date" />
+              </label>
+            </div>
             <button id="printJournalReportButton" class="primary-button" type="button">Друкувати журнал</button>
-          </div>
+          </section>
 
-          <div class="modal-divider wide"></div>
-
-          <div class="modal-actions wide">
-            <button id="cancelReportButton" class="ghost-button" type="button">Скасувати</button>
-          </div>
-
-          <p id="reportModalMessage" class="message wide"></p>
+          <p id="reportModalMessage" class="message"></p>
         </form>
       </div>
 
@@ -297,7 +350,7 @@
         <div class="panel modal-panel">
           <div class="section-head">
             <div>
-              <p class="eyebrow">історія</p>
+              <p class="eyebrow">Історія</p>
               <h2>Історія запису</h2>
             </div>
           </div>
@@ -312,6 +365,8 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./app.js?v=20260831-21"></script>
+    <script src="./print-kit.js?v=20260929-1"></script>
+    <script src="./app.js?v=20260929-3"></script>
+    <script src="./pill-nav.js?v=20260929-2"></script>
   </body>
 </html>
