@@ -1679,7 +1679,32 @@ tbody tr:hover td {
 
 .row-actions {
   display: flex;
+  justify-content: flex-end;
   gap: 6px;
+}
+
+/* Колонка "Керування" стискається до кнопок і закріплена біля правого краю таблиці,
+   щоб кнопки не ховались за горизонтальною прокруткою широких таблиць */
+th.admin-only,
+td.admin-only {
+  position: sticky;
+  right: 0;
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+  box-shadow: -1px 0 0 var(--line);
+}
+
+th.admin-only {
+  z-index: 2;
+}
+
+td.admin-only {
+  background: var(--panel);
+}
+
+tbody tr:hover td.admin-only {
+  background: linear-gradient(rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.025)), var(--panel);
 }
 
 .hidden-for-role {

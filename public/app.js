@@ -298,10 +298,20 @@ async function loadEquipment() {
   state.equipment = data || [];
 }
 
+// Підставляємо засіб лише коли номер вказує на нього однозначно: у багатьох засобів номер
+// "Б/Н", і тоді перший збіг затер би вже обраний засіб чужим
 function findEquipmentBySerial(value) {
   const needle = value.trim().toLowerCase();
   if (!needle) return null;
-  return state.equipment.find((item) => (item.serial_number || "").trim().toLowerCase() === needle) || null;
+
+  let matches = state.equipment.filter((item) => (item.serial_number || "").trim().toLowerCase() === needle);
+  const selectedAsset = elements.assetSelect.value;
+  if (selectedAsset) {
+    const sameAsset = matches.filter((item) => item.name === selectedAsset);
+    if (sameAsset.length || matches.length > 1) matches = sameAsset;
+  }
+
+  return matches.length === 1 ? matches[0] : null;
 }
 
 function applyEquipmentMatch(match) {
