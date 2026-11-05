@@ -104,9 +104,21 @@ function setMessage(target, text, isError = false) {
   target.style.color = isError ? "var(--red)" : "var(--khaki)";
 }
 
-function displayName(profile) {
-  if (!profile) return "Невідомий користувач";
-  return profile.display_name || profile.email || "Невідомий користувач";
+// Email користувачів на екран не виводиться — лише позивні
+function displayName(name) {
+  return name || "Користувач без позивного";
+}
+
+// Позивні авторів з функції get_display_names (вона віддає лише позивні, без email).
+// Поки функції в базі немає — береться позивний із вкладеного профілю.
+async function loadDisplayNames(entries) {
+  const names = new Map(entries.map((entry) => [entry.changed_by, entry.profiles?.display_name || null]));
+  const ids = [...names.keys()].filter(Boolean);
+  if (!ids.length) return names;
+
+  const { data, error } = await db.rpc("get_display_names", { ids });
+  if (!error) (data || []).forEach((row) => names.set(row.id, row.display_name));
+  return names;
 }
 
 const actionLabels = {
@@ -783,7 +795,7 @@ async function openRecordHistory(id) {
 
   const { data, error } = await db
     .from("workflow_records_history")
-    .select("action, changed_at, profiles(email, display_name)")
+    .select("action, changed_at, changed_by, profiles(display_name)")
     .eq("record_id", id)
     .order("changed_at", { ascending: true });
 
@@ -797,9 +809,11 @@ async function openRecordHistory(id) {
     return;
   }
 
+  const names = await loadDisplayNames(data);
+
   elements.recordHistoryList.innerHTML = data
     .map((entry) => {
-      const who = displayName(entry.profiles);
+      const who = entry.changed_by ? displayName(names.get(entry.changed_by)) : "Невідомий користувач";
       const when = new Date(entry.changed_at).toLocaleString("uk-UA");
       return `
         <div class="history-entry">

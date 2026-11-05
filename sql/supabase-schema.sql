@@ -300,3 +300,5 @@ using (public.get_my_role() = 'admin');
 
 -- Після створення першого користувача призначте адміністратора:
 -- update public.profiles set role = 'admin' where email = 'your@email.com';
+
+-- Після схеми виконайте sql/supabase-harden-security.sql — права й функції закриваються там.
