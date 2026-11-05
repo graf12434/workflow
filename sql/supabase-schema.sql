@@ -168,14 +168,18 @@ create table if not exists public.workflow_assets (
   type text check (type in ('long', 'medium')),
   variant text check (variant in ('РЕБ', 'РЕР', 'АДР', 'Спец обладнання', 'Запчастини', 'Інше')),
   category text check (category in ('directional', 'dome', 'rer', 'video')),
+  jam_mode text not null default 'noise' check (jam_mode in ('noise', 'curtain')),
   created_by uuid references auth.users(id),
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  constraint workflow_assets_curtain_check
+    check (jam_mode <> 'curtain' or (category = 'directional' and type = 'long'))
 );
 
 create index if not exists workflow_assets_name_idx on public.workflow_assets(lower(name));
 create index if not exists workflow_assets_type_idx on public.workflow_assets(type);
 create index if not exists workflow_assets_variant_idx on public.workflow_assets(variant);
 create index if not exists workflow_assets_category_idx on public.workflow_assets(category);
+create index if not exists workflow_assets_jam_mode_idx on public.workflow_assets(jam_mode);
 
 alter table public.workflow_assets enable row level security;
 
@@ -242,10 +246,13 @@ create table if not exists public.workflow_reb_far (
   type text not null default 'long' check (type in ('long', 'medium')),
   variant text not null default 'РЕБ' check (variant in ('РЕБ', 'РЕР', 'АДР', 'Спец обладнання', 'Запчастини', 'Інше')),
   category text check (category in ('directional', 'dome', 'rer', 'video')),
+  jam_mode text not null default 'noise' check (jam_mode in ('noise', 'curtain')),
   note text,
   created_by uuid not null references auth.users(id),
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint workflow_reb_far_curtain_check
+    check (jam_mode <> 'curtain' or (category = 'directional' and type = 'long'))
 );
 
 create index if not exists workflow_reb_far_name_idx on public.workflow_reb_far(lower(name));
@@ -253,6 +260,7 @@ create index if not exists workflow_reb_far_serial_idx on public.workflow_reb_fa
 create index if not exists workflow_reb_far_variant_idx on public.workflow_reb_far(variant);
 create index if not exists workflow_reb_far_type_idx on public.workflow_reb_far(type);
 create index if not exists workflow_reb_far_category_idx on public.workflow_reb_far(category);
+create index if not exists workflow_reb_far_jam_mode_idx on public.workflow_reb_far(jam_mode);
 
 drop trigger if exists workflow_reb_far_set_updated_at on public.workflow_reb_far;
 create trigger workflow_reb_far_set_updated_at

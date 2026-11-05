@@ -279,8 +279,8 @@ function renderRecords() {
       const actions = canEdit || canDelete
         ? `<td class="admin-only">
             <div class="row-actions">
-              ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}">&#9998;</button>` : ""}
-              ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}">&#10005;</button>` : ""}
+              ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></button>` : ""}
+              ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>` : ""}
             </div>
           </td>`
         : '<td class="admin-only hidden-for-role"></td>';

@@ -511,13 +511,12 @@ function renderActivityStats() {
 
   const diff = weekRecords.length - prevCount;
   const trend = $("weekWorkTrend");
-  trend.className = `trend ${diff > 0 ? "trend--up" : diff < 0 ? "trend--down" : ""}`;
+  trend.className = "trend";
   trend.innerHTML = diff
-    ? `<b>${diff > 0 ? "↗ +" : "↘ "}${diff}</b> до попередніх 7 днів`
-    : "як і попередні 7 днів";
+    ? `<b>${diff > 0 ? "+" : "−"}${Math.abs(diff)}</b> до попередніх 7 днів (${prevCount})`
+    : `як і попередні 7 днів (${prevCount})`;
 
   $("weekWorkTotal").textContent = weekRecords.length;
-  $("todayTotal").textContent = days[6].count;
 
   const maxDay = Math.max(1, ...days.map((day) => day.count));
   $("activityChart").innerHTML = days
@@ -542,16 +541,64 @@ function renderActivityStats() {
     : '<span class="stat-empty">Немає робіт за тиждень</span>';
 }
 
-function activeSerialCount(records) {
+// Засоби, чия остання дія — розгортання чи переміщення, тобто ті, що зараз на позиціях.
+// І головна цифра, і розподіл за районами рахуються з цього одного списку.
+function deployedNow(records) {
   const latestBySerial = new Map();
 
   [...records]
     .sort((a, b) => `${a.date} ${a.created_at}`.localeCompare(`${b.date} ${b.created_at}`))
     .forEach((record) => {
-      latestBySerial.set(record.serial_number.toLowerCase(), record.action_type);
+      latestBySerial.set(record.serial_number.toLowerCase(), record);
     });
 
-  return [...latestBySerial.values()].filter((action) => action === "deploy" || action === "relocate").length;
+  return [...latestBySerial.values()].filter(
+    (record) => record.action_type === "deploy" || record.action_type === "relocate"
+  );
+}
+
+const DEPLOY_AREAS_SHOWN = 4;
+
+function renderDeployedStats() {
+  const deployed = deployedNow(state.records);
+  $("activeTotal").textContent = deployed.length;
+
+  const byArea = [...deployed.reduce((map, record) => {
+    const area = record.area || "—";
+    return map.set(area, (map.get(area) || 0) + 1);
+  }, new Map()).entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "uk"));
+
+  $("activeAreasHint").textContent = byArea.length
+    ? `у ${byArea.length} ${byArea.length === 1 ? "районі" : "районах"}`
+    : "за останньою дією засобу";
+
+  if (!byArea.length) {
+    $("deployAreas").innerHTML = '<li class="stat-empty">Жоден засіб зараз не розгорнутий</li>';
+    return;
+  }
+
+  const shown = byArea.slice(0, DEPLOY_AREAS_SHOWN);
+  const rest = byArea.slice(DEPLOY_AREAS_SHOWN);
+  const max = shown[0][1];
+  const rows = shown.map(
+    ([area, count]) => `
+      <li class="deploy-area">
+        <span class="deploy-area-name" title="${escapeHtml(area)}">${escapeHtml(area)}</span>
+        <b>${count}</b>
+        <span class="deploy-area-bar"><span style="--value: ${(count / max) * 100}%"></span></span>
+      </li>`
+  );
+
+  if (rest.length) {
+    const restCount = rest.reduce((sum, [, count]) => sum + count, 0);
+    rows.push(`
+      <li class="deploy-area deploy-area--rest">
+        <span class="deploy-area-name">Ще ${rest.length} ${rest.length === 1 ? "район" : rest.length < 5 ? "райони" : "районів"}</span>
+        <b>${restCount}</b>
+      </li>`);
+  }
+
+  $("deployAreas").innerHTML = rows.join("");
 }
 
 function mostFrequent(records, key) {
@@ -567,8 +614,8 @@ function mostFrequent(records, key) {
 function renderDashboard() {
   renderEquipmentStats();
   renderActivityStats();
+  renderDeployedStats();
 
-  $("activeTotal").textContent = activeSerialCount(state.records);
   $("topArea").textContent = mostFrequent(state.filteredRecords, "area");
   $("topAsset").textContent = mostFrequent(state.filteredRecords, "asset");
   $("filteredTotal").textContent = state.filteredRecords.length;
@@ -589,9 +636,9 @@ function renderRecords() {
       const actions = canEdit || canDelete
         ? `<td class="admin-only">
             <div class="row-actions">
-              ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}">&#9998;</button>` : ""}
-              ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}">&#10005;</button>` : ""}
-              <button class="icon-button" type="button" title="Інформація" data-info="${record.id}">&#8505;</button>
+              ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></button>` : ""}
+              ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>` : ""}
+              <button class="icon-button" type="button" title="Інформація" data-info="${record.id}"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
             </div>
           </td>`
         : '<td class="admin-only hidden-for-role"></td>';

@@ -17,9 +17,18 @@ const state = {
   records: [],
   filteredRecords: [],
   assets: [],
+  mode: "noise",
   category: "directional",
   type: "long"
 };
+
+const modeTitles = {
+  noise: "Білий шум",
+  curtain: "Штора"
+};
+
+// "Штора" буває лише спрямованої дії й дального радіуса, тож для неї ці два вибори фіксовані
+const CURTAIN_LOCK = { category: "directional", type: "long" };
 
 const categoryTitles = {
   directional: "Спрямованої дії",
@@ -83,6 +92,7 @@ const elements = {
   filteredTotal: $("filteredTotal"),
   pageTitle: $("pageTitle"),
   recordsTitle: $("recordsTitle"),
+  modeSwitcher: $("modeSwitcher"),
   categorySwitcher: $("categorySwitcher"),
   typeSwitcher: $("typeSwitcher"),
   pdfButton: $("pdfButton")
@@ -121,11 +131,11 @@ function setConnected(isConnected) {
 }
 
 function applyLabels() {
-  const category = categoryTitles[state.category];
-  const type = typeTitles[state.type];
-  elements.pageTitle.textContent = `${category} · ${type}`;
-  elements.recordsTitle.textContent = `Засоби: ${category}, ${type}`;
-  document.title = `Workflow — ${category} · ${type}`;
+  const parts = [categoryTitles[state.category], typeTitles[state.type]];
+  if (state.mode === "curtain") parts.unshift(modeTitles.curtain);
+  elements.pageTitle.textContent = parts.join(" · ");
+  elements.recordsTitle.textContent = `Засоби: ${parts.join(", ")}`;
+  document.title = `Workflow — ${parts.join(" · ")}`;
 }
 
 function ownershipFilterValue() {
@@ -167,6 +177,7 @@ async function loadAssets() {
   const { data, error } = await db
     .from("workflow_assets")
     .select("id, name")
+    .eq("jam_mode", state.mode)
     .eq("type", state.type)
     .eq("category", state.category)
     .eq("variant", VARIANT)
@@ -247,6 +258,7 @@ async function loadRecords() {
   const { data, error } = await db
     .from("workflow_reb_far")
     .select("*")
+    .eq("jam_mode", state.mode)
     .eq("type", state.type)
     .eq("category", state.category)
     .eq("variant", VARIANT)
@@ -307,8 +319,8 @@ function renderRecords() {
       const actions = canEdit || canDelete
         ? `<td class="admin-only">
             <div class="row-actions">
-              ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}">&#9998;</button>` : ""}
-              ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}">&#10005;</button>` : ""}
+              ${canEdit ? `<button class="icon-button" type="button" title="Редагувати" data-edit="${record.id}"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></button>` : ""}
+              ${canDelete ? `<button class="icon-button danger" type="button" title="Видалити" data-delete="${record.id}"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>` : ""}
             </div>
           </td>`
         : '<td class="admin-only hidden-for-role"></td>';
@@ -384,6 +396,7 @@ function collectFormData() {
     ownership: $("ownership").value,
     status: $("status").value,
     note: $("note").value.trim() || null,
+    jam_mode: state.mode,
     type: state.type,
     category: state.category,
     variant: VARIANT,
@@ -507,6 +520,7 @@ elements.assetForm.addEventListener("submit", async (event) => {
     ? db.from("workflow_assets").update({ name }).eq("id", assetEditId).select()
     : db.from("workflow_assets").insert({
         name,
+        jam_mode: state.mode,
         type: state.type,
         category: state.category,
         variant: VARIANT,
@@ -549,6 +563,25 @@ elements.nameFilter.addEventListener("change", applyFilters);
 elements.serialFilter.addEventListener("input", applyFilters);
 elements.ownershipFilter.addEventListener("change", applyFilters);
 elements.statusFilter.addEventListener("change", applyFilters);
+
+elements.modeSwitcher.addEventListener("change", async () => {
+  state.mode = elements.modeSwitcher.value;
+  const locked = state.mode === "curtain";
+
+  if (locked) {
+    state.category = CURTAIN_LOCK.category;
+    state.type = CURTAIN_LOCK.type;
+    elements.categorySwitcher.value = state.category;
+    elements.typeSwitcher.value = state.type;
+  }
+  elements.categorySwitcher.disabled = locked;
+  elements.typeSwitcher.disabled = locked;
+
+  applyLabels();
+  resetForm();
+  await loadAssets();
+  await loadRecords();
+});
 
 elements.categorySwitcher.addEventListener("change", async () => {
   state.category = elements.categorySwitcher.value;

@@ -9,8 +9,8 @@
     <link rel="apple-touch-icon" href="./favicon.png?v=20260929-1" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261021-1" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20261105-22" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -23,7 +23,7 @@
             </svg>
           </span>
           <div>
-            <p class="eyebrow"><a href="./index.html" class="breadcrumb-link">Workflow</a> // Засоби РЕБ</p>
+            <p class="eyebrow"><a href="./index.html" class="breadcrumb-link">Workflow</a> / Засоби РЕБ</p>
             <h1 id="pageTitle">Дального радіуса</h1>
           </div>
         </div>
@@ -68,7 +68,6 @@
             <form id="entryForm" class="panel entry-form">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Новий засіб</p>
                   <h2>Додати засіб</h2>
                 </div>
                 <button id="resetFormButton" class="ghost-button" type="button">Очистити</button>
@@ -82,7 +81,7 @@
                     <option value="" disabled selected>Оберіть назву</option>
                   </select>
                   <button id="addAssetButton" class="icon-button" type="button" title="Додати назву засобу" hidden>+</button>
-                  <button id="editAssetButton" class="icon-button" type="button" title="Редагувати назву засобу" hidden>&#9998;</button>
+                  <button id="editAssetButton" class="icon-button" type="button" title="Редагувати назву засобу" hidden><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></button>
                 </div>
               </label>
               <label>
@@ -118,7 +117,6 @@
             <section class="panel operations-panel">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Облік засобів</p>
                   <h2 id="recordsTitle">Засоби дального радіуса</h2>
                 </div>
                 <div class="section-head-actions">
@@ -130,6 +128,10 @@
                     </svg>
                     PDF
                   </button>
+                  <select id="modeSwitcher" aria-label="Тип перешкоди засобів РЕБ">
+                    <option value="noise">Білий шум</option>
+                    <option value="curtain">Штора</option>
+                  </select>
                   <select id="categorySwitcher" aria-label="Категорія засобів РЕБ">
                     <option value="directional">Спрямованої дії</option>
                     <option value="dome">Купольної дії</option>
@@ -216,7 +218,6 @@
         <form id="assetForm" class="panel entry-form modal-panel">
           <div class="section-head">
             <div>
-              <p class="eyebrow">Довідник назв</p>
               <h2 id="assetModalTitle">Додати назву засобу</h2>
             </div>
           </div>
@@ -235,7 +236,7 @@
 
     <script src="./supabase-config.js?v=20260831-6"></script>
     <script src="./print-kit.js?v=20260929-1"></script>
-    <script src="./reb.js?v=20260929-3"></script>
+    <script src="./reb.js?v=20261105-21"></script>
     <script src="./pill-nav.js?v=20260929-2"></script>
   </body>
 </html>

@@ -9,8 +9,8 @@
     <link rel="apple-touch-icon" href="./favicon.png?v=20260929-1" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261021-1" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20261105-22" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -23,8 +23,8 @@
             </svg>
           </span>
           <div>
-            <p class="eyebrow">Тактична панель // WF-01</p>
-            <h1>Workflow</h1>
+            <p class="eyebrow">Workflow / Тактична панель</p>
+            <h1>Журнал</h1>
           </div>
         </div>
         <div class="user-panel">
@@ -92,7 +92,6 @@
                 <rect x="29" y="44.2" width="12" height="2.6" rx="1.3" opacity="0.6" />
               </g>
             </svg>
-            <p class="eyebrow">Захищений доступ</p>
             <h2>Вхід до журналу</h2>
             <p>Авторизовані користувачі можуть вносити записи, переглядати зведення та фільтрувати події за періодами.</p>
           </div>
@@ -147,14 +146,15 @@
               <div id="actionChips" class="action-chips"></div>
             </article>
 
-            <article class="metric-card alert stat-card-accent">
-              <span>Розгорнуто зараз</span>
-              <strong id="activeTotal">0</strong>
-              <small>за останньою дією за серійним номером</small>
-              <div class="stat-accent-foot">
-                <span>Записів сьогодні</span>
-                <b id="todayTotal">0</b>
+            <article class="panel stat-card">
+              <div class="stat-card-head">
+                <div>
+                  <span class="stat-card-label">Розгорнуто зараз</span>
+                  <strong id="activeTotal" class="stat-card-value stat-card-value--lead">0</strong>
+                </div>
+                <span id="activeAreasHint" class="stat-card-hint">за останньою дією засобу</span>
               </div>
+              <ul id="deployAreas" class="deploy-areas"></ul>
             </article>
           </section>
 
@@ -162,7 +162,6 @@
             <form id="entryForm" class="panel entry-form">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Новий запис</p>
                   <h2>Оперативний запис</h2>
                 </div>
                 <button id="resetFormButton" class="ghost-button" type="button">Очистити</button>
@@ -174,7 +173,7 @@
                 <input id="recordDate" type="date" required />
               </label>
               <label>
-                ЗАСОБИ
+                Засоби
                 <select id="assetVariantFilter">
                   <option value="">Усі</option>
                   <option value="РЕБ">РЕБ</option>
@@ -229,7 +228,6 @@
             <section class="panel operations-panel">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Записи</p>
                   <h2>Журнал подій</h2>
                 </div>
               </div>
@@ -294,10 +292,9 @@
         <form id="reportForm" class="panel modal-panel report-modal">
           <header class="modal-head">
             <div>
-              <p class="eyebrow">Звіти</p>
               <h2>Друк звітів</h2>
             </div>
-            <button id="cancelReportButton" class="icon-button modal-close" type="button" title="Закрити" aria-label="Закрити">&#10005;</button>
+            <button id="cancelReportButton" class="icon-button modal-close" type="button" title="Закрити" aria-label="Закрити"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
           </header>
 
           <section class="modal-section">
@@ -350,7 +347,6 @@
         <div class="panel modal-panel history-panel">
           <div class="section-head">
             <div>
-              <p class="eyebrow">Історія</p>
               <h2>Історія запису</h2>
             </div>
           </div>
@@ -367,7 +363,7 @@
     <script src="./supabase-config.js?v=20260831-6"></script>
     <script src="./print-kit.js?v=20260929-1"></script>
     <script src="./date-picker.js?v=20260929-1"></script>
-    <script src="./app.js?v=20261021-1"></script>
+    <script src="./app.js?v=20261105-21"></script>
     <script src="./pill-nav.js?v=20260929-2"></script>
   </body>
 </html>
