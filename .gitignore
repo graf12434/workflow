@@ -8,3 +8,4 @@ recovery-codes.txt
 node_modules/
 .DS_Store
 /version/
+CLAUDE.md

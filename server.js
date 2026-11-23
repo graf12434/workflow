@@ -1,9 +1,28 @@
+// Локальний сервер для розробки.
+//   node server.js                 — робочий код з кореня (public/)
+//   node server.js version/v2.3    — будь-яка версія (її public/)
+// Версії не мають власного supabase-config.js: він береться з кореневого public/.
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
 const port = Number(process.env.PORT || 8000);
-const root = path.join(__dirname, "public");
+const rootPublic = path.join(__dirname, "public");
+
+function siteDir(arg) {
+  if (!arg) return rootPublic;
+  const dir = path.resolve(process.cwd(), arg);
+  const nested = path.join(dir, "public");
+  const site = fs.existsSync(nested) ? nested : dir;
+  if (!fs.existsSync(path.join(site, "index.html"))) {
+    console.error(`У ${site} немає index.html — це не папка сайту чи версії.`);
+    process.exit(1);
+  }
+  return site;
+}
+
+const site = siteDir(process.argv[2]);
+const SHARED_FROM_ROOT = new Set(["supabase-config.js"]);
 
 const types = {
   ".html": "text/html; charset=utf-8",
@@ -16,12 +35,21 @@ const types = {
   ".ico": "image/x-icon"
 };
 
+function resolveFile(relativePath) {
+  const filePath = path.resolve(site, relativePath);
+  if (filePath !== site && !filePath.startsWith(site + path.sep)) return null;
+  if (!fs.existsSync(filePath) && SHARED_FROM_ROOT.has(relativePath)) {
+    return path.join(rootPublic, relativePath);
+  }
+  return filePath;
+}
+
 const server = http.createServer((req, res) => {
   const urlPath = decodeURIComponent(req.url.split("?")[0]);
   const relativePath = urlPath === "/" ? "index.html" : urlPath.replace(/^\/+/, "");
-  const filePath = path.resolve(root, relativePath);
+  const filePath = resolveFile(relativePath);
 
-  if (!filePath.startsWith(root)) {
+  if (!filePath) {
     res.writeHead(403);
     res.end("Forbidden");
     return;
@@ -43,5 +71,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`Workflow server running at http://localhost:${port}`);
+  console.log(`Workflow (${path.relative(__dirname, site) || "public"}) — http://localhost:${port}`);
 });
