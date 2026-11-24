@@ -334,7 +334,24 @@ function setConnected(isConnected) {
   status.classList.toggle("online", isConnected);
 }
 
+// До входу сайт виглядає як сторінка клубу; справжні назва й іконка — лише після входу з кодом
+const APP_TITLES = { index: "Журнал подій", assets: "Засоби", reports: "Звіти" };
+
+function revealApp() {
+  const page = (window.location.pathname.split("/").pop() || "index.html").replace(".html", "");
+  document.title = `${APP_TITLES[page] || "Журнал"} — Workflow`;
+  document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]').forEach((link) => {
+    link.href = link.type === "image/svg+xml" ? "./favicon.svg?v=20260929-1" : "./favicon.png?v=20260929-1";
+  });
+  document.body.classList.remove("is-guest");
+}
+
 function showSignedOut(message = "") {
+  // Сторінка входу (клубна) — лише на головній
+  if (!message && !$("authView").classList.contains("club-view")) {
+    window.location.replace("./index.html");
+    return;
+  }
   $("authView").hidden = false;
   $("appView").hidden = true;
   $("mainNav").hidden = true;
@@ -432,7 +449,7 @@ function mfaView() {
     "afterend",
     `<section id="mfaView" class="mfa-view" hidden>
       <form id="mfaForm" class="panel mfa-card" novalidate>
-        <h2 id="mfaTitle" class="auth-title"></h2>
+        <h1 id="mfaTitle" class="auth-title"></h1>
         <p id="mfaLead" class="mfa-lead"></p>
         <div id="mfaSetup" class="mfa-setup" hidden>
           <ol class="mfa-steps">
@@ -472,7 +489,7 @@ async function prepareFactor() {
   const { data: created, error: enrollError } = await db.auth.mfa.enroll({
     factorType: "totp",
     friendlyName: "Google Authenticator",
-    issuer: "Workflow"
+    issuer: "Machinarium Club"
   });
   if (enrollError) throw enrollError;
   return { factorId: created.id, enrolled: false, qr: created.totp.qr_code, secret: created.totp.secret };
@@ -500,8 +517,8 @@ async function requireSecondFactor() {
 
   $("mfaTitle").textContent = factor.enrolled ? "Код підтвердження" : "Підключіть Google Authenticator";
   $("mfaLead").textContent = factor.enrolled
-    ? "Відкрийте Google Authenticator і введіть 6-значний код для Workflow."
-    : "Вхід до журналу — лише з кодом з телефона. Налаштування займе хвилину, робиться один раз.";
+    ? "Відкрийте Google Authenticator і введіть 6-значний код клубу."
+    : "Вхід у клуб — лише з кодом з телефона. Налаштування займе хвилину, робиться один раз.";
   $("mfaSetup").hidden = factor.enrolled;
   if (!factor.enrolled) {
     $("mfaQr").src = factor.qr;
@@ -524,7 +541,7 @@ async function requireSecondFactor() {
     if (error) {
       $("mfaSubmit").disabled = false;
       $("mfaCode").select();
-      setMessage($("mfaMessage"), "Код не підійшов. Перевірте, що це код для Workflow, і введіть новий.", true);
+      setMessage($("mfaMessage"), "Код не підійшов. Перевірте, що це код клубу, і введіть новий.", true);
       return;
     }
     window.location.reload();
@@ -581,6 +598,7 @@ export async function initPage(onReady) {
   $("authView").hidden = true;
   $("appView").hidden = false;
   $("mainNav").hidden = false;
+  revealApp();
   applyPermissions();
 
   try {

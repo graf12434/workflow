@@ -2442,3 +2442,132 @@ body.has-layer {
 .mfa-card .message:empty {
   display: none;
 }
+
+/* ---------- Гостьовий вигляд: сторінка клубу (до входу з кодом) ---------- */
+.club-brand {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+body.is-guest .club-brand {
+  display: inline-flex;
+}
+
+body.is-guest .brand {
+  display: none;
+}
+
+.club-view {
+  grid-template-columns: minmax(0, 520px) minmax(300px, 400px);
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+}
+
+.club-poster {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: #000000;
+}
+
+.club-poster img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Вогники на антенах роботів — координати в частках картинки 1254×1254 */
+.club-led {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff6d0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: club-led 2.4s ease-in-out infinite;
+}
+
+.club-led--main {
+  left: 39.4%;
+  top: 11.1%;
+  width: 2.6%;
+}
+
+.club-led--small {
+  left: 17.2%;
+  top: 41.1%;
+  width: 1.8%;
+  animation-duration: 3.1s;
+  animation-delay: 1.2s;
+}
+
+@keyframes club-led {
+  0%, 100% {
+    opacity: 0.25;
+    box-shadow: 0 0 2px 1px rgba(255, 200, 80, 0.3);
+  }
+  12%, 30% {
+    opacity: 1;
+    box-shadow: 0 0 6px 3px rgba(255, 240, 180, 1), 0 0 18px 8px rgba(255, 200, 80, 0.85), 0 0 46px 20px rgba(255, 150, 40, 0.4);
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 0 0 2px 1px rgba(255, 200, 80, 0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .club-led {
+    animation: none;
+    opacity: 1;
+    box-shadow: 0 0 6px 2px rgba(255, 205, 90, 0.8);
+  }
+}
+
+.club-form {
+  gap: 16px;
+  padding: 28px;
+}
+
+.club-intro {
+  display: grid;
+  gap: 8px;
+}
+
+.club-intro .auth-title {
+  font-size: 1.5rem;
+}
+
+.club-intro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 860px) {
+  .club-view {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 20px;
+  }
+
+  .club-poster {
+    width: min(100%, 420px);
+  }
+
+  .club-form {
+    width: min(100%, 440px);
+  }
+}
+
+.club-intro .auth-title,
+.mfa-card .auth-title {
+  margin: 0;
+}
