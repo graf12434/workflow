@@ -161,6 +161,59 @@
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8d96' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
+/* Машинаріум — іржаве залізо, старий папір і латунь; рукописні заголовки, книжковий текст.
+   Текстури — SVG-шум, згенерований кодом (без сторонніх картинок) */
+:root[data-theme="machinarium"] {
+  --scheme: light;
+  --bg: #c2ae88;
+  --bg-elevated: #ddcfae;
+  --panel: #ebe1c8;
+  --panel-strong: #e0d3b2;
+  --surface-hover: #d8c8a3;
+  --line: #b29d76;
+  --line-strong: #5e4a32;
+  --field-bg: #f4ecd8;
+  --black: #241a12;
+
+  --text: #2a1f15;
+  --muted: #45351f;
+  --subtle: #4f3e2a;
+
+  --accent: #8c3c15;
+  --accent-hover: #74310f;
+  --accent-ink: #fbf3e0;
+  --cyan: #2b5a5f;
+
+  --green: #4a5a1a;
+  --amber: #7c4c06;
+  --red: #8a2618;
+
+  --primary-bg: #8c3c15;
+  --primary-hover: #74310f;
+  --primary-ink: #fbf3e0;
+
+  --overlay: rgba(36, 26, 18, 0.5);
+  --shadow-md: 4px 4px 0 rgba(42, 31, 21, 0.3);
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234f3e2a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+  --r-sm: 5px;
+  --r-md: 7px;
+  --r-lg: 10px;
+
+  --font-body: "Kurale", Georgia, "Times New Roman", serif;
+  --font-head: "Neucha", "Kurale", Georgia, serif;
+  --font-display: "Amatic SC", "Neucha", Georgia, serif;
+  --ink-shadow: 3px 3px 0 rgba(42, 31, 21, 0.28);
+  --rivets:
+    radial-gradient(circle at 9px 9px, #8a7556 0 2.5px, #3a2c1e 2.6px 3.6px, transparent 3.7px),
+    radial-gradient(circle at calc(100% - 9px) 9px, #8a7556 0 2.5px, #3a2c1e 2.6px 3.6px, transparent 3.7px),
+    radial-gradient(circle at 9px calc(100% - 9px), #8a7556 0 2.5px, #3a2c1e 2.6px 3.6px, transparent 3.7px),
+    radial-gradient(circle at calc(100% - 9px) calc(100% - 9px), #8a7556 0 2.5px, #3a2c1e 2.6px 3.6px, transparent 3.7px);
+  --tex-wall: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.02' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.24 0 0 0 0 0.09 0 0 0 1.1 -0.45'/%3E%3C/filter%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.11 0 0 0 0 0.07 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='360' height='360' filter='url(%23r)' opacity='0.55'/%3E%3Crect width='360' height='360' filter='url(%23g)' opacity='0.35'/%3E%3C/svg%3E");
+  --tex-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.24 0 0 0 0 0.12 0 0 0 0.6 -0.08'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23p)' opacity='0.28'/%3E%3C/svg%3E");
+  --tex-iron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='i'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.06' numOctaves='4' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.3 0 0 0 0 0.12 0 0 0 1.2 -0.55'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23i)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
 * {
   box-sizing: border-box;
 }
@@ -2570,4 +2623,236 @@ body.is-guest .brand {
 .club-intro .auth-title,
 .mfa-card .auth-title {
   margin: 0;
+}
+
+/* ==========================================================================
+   Тема "Машинаріум": оформлення поверх спільних компонентів
+   ========================================================================== */
+:root[data-theme="machinarium"] body {
+  background-color: var(--bg);
+  background-image: var(--tex-wall);
+}
+
+[data-theme="machinarium"] body {
+  font-size: 1rem;
+}
+
+/* Заголовки — від руки */
+[data-theme="machinarium"] h1,
+[data-theme="machinarium"] .brand-name,
+[data-theme="machinarium"] .club-brand span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+[data-theme="machinarium"] h1 {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+[data-theme="machinarium"] .brand-name,
+[data-theme="machinarium"] .club-brand span {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+[data-theme="machinarium"] h2,
+[data-theme="machinarium"] h3,
+[data-theme="machinarium"] .pill-nav-link,
+[data-theme="machinarium"] .type-tab,
+[data-theme="machinarium"] .primary-button,
+[data-theme="machinarium"] .ghost-button,
+[data-theme="machinarium"] .kpi-label,
+[data-theme="machinarium"] .kpi-value,
+[data-theme="machinarium"] .repair-count,
+[data-theme="machinarium"] .action-pill,
+[data-theme="machinarium"] .status-pill,
+[data-theme="machinarium"] th,
+[data-theme="machinarium"] label,
+[data-theme="machinarium"] .theme-option {
+  font-family: var(--font-head);
+  letter-spacing: 0.01em;
+}
+
+[data-theme="machinarium"] h2,
+[data-theme="machinarium"] .panel-head h2 {
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+[data-theme="machinarium"] .kpi-value {
+  font-size: 2.25rem;
+  font-weight: 400;
+}
+
+/* Папір із заклепками: панелі, зведення, бічні панелі, вхід */
+[data-theme="machinarium"] .panel,
+[data-theme="machinarium"] .kpi-strip,
+[data-theme="machinarium"] .drawer,
+[data-theme="machinarium"] .dialog {
+  border: 2px solid var(--line-strong);
+  background-color: var(--panel);
+  background-image: var(--rivets), var(--tex-paper);
+  box-shadow: var(--ink-shadow);
+}
+
+[data-theme="machinarium"] .kpi + .kpi {
+  border-left: 2px dashed var(--line);
+}
+
+/* Шапка — темна залізна пластина з заклепками; кольори всередині — світлі */
+[data-theme="machinarium"] .topbar {
+  --text: #f3e6c8;
+  --muted: #dccaa2;
+  --subtle: #cdb88d;
+  --line: #6a543a;
+  --line-strong: #9c8158;
+  --panel-strong: #4a3828;
+  --surface-hover: #57422f;
+  --field-bg: #3a2c1f;
+  --accent: #e0a35e;
+  --accent-ink: #2a1f15;
+  margin-top: 10px;
+  padding: 0 18px;
+  border: 2px solid #1f160e;
+  border-radius: var(--r-lg);
+  background-color: #3b2c1f;
+  background-image: var(--rivets), var(--tex-iron);
+  box-shadow: var(--ink-shadow);
+}
+
+[data-theme="machinarium"] .brand-mark {
+  border: 2px solid #1f160e;
+  background: #b5652a;
+}
+
+[data-theme="machinarium"] .pill-nav-link {
+  font-size: 1.125rem;
+}
+
+/* Кнопки — латунна/іржава пластина з чорнильним контуром */
+[data-theme="machinarium"] .primary-button,
+[data-theme="machinarium"] .ghost-button,
+[data-theme="machinarium"] .icon-button {
+  border-width: 2px;
+  border-color: var(--line-strong);
+  box-shadow: 2px 2px 0 rgba(42, 31, 21, 0.3);
+}
+
+[data-theme="machinarium"] .primary-button,
+[data-theme="machinarium"] .ghost-button {
+  font-size: 1rem;
+}
+
+[data-theme="machinarium"] .primary-button {
+  border-color: #3a1a08;
+}
+
+[data-theme="machinarium"] .primary-button:active,
+[data-theme="machinarium"] .ghost-button:active,
+[data-theme="machinarium"] .icon-button:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+/* Поля — світлий папір з чорнильною рамкою */
+[data-theme="machinarium"] input,
+[data-theme="machinarium"] select,
+[data-theme="machinarium"] textarea {
+  border: 2px solid var(--line);
+  font-size: 0.95rem;
+}
+
+[data-theme="machinarium"] input:focus,
+[data-theme="machinarium"] select:focus,
+[data-theme="machinarium"] textarea:focus {
+  border-color: var(--line-strong);
+}
+
+/* Таблиці — розграфлений журнал */
+[data-theme="machinarium"] .table-wrap {
+  border: 2px solid var(--line-strong);
+  background: var(--field-bg);
+}
+
+[data-theme="machinarium"] th {
+  border-bottom: 2px solid var(--line-strong);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+[data-theme="machinarium"] td {
+  border-bottom: 1px dashed var(--line);
+  font-size: 0.95rem;
+}
+
+/* Бейджі — як штампи */
+[data-theme="machinarium"] .action-pill,
+[data-theme="machinarium"] .status-pill {
+  border: 1.5px solid currentColor;
+  border-radius: var(--r-sm);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+[data-theme="machinarium"] .type-tab {
+  font-size: 1.05rem;
+}
+
+[data-theme="machinarium"] .type-tab-count {
+  font-family: var(--font-body);
+}
+
+[data-theme="machinarium"] .repair-item {
+  border: 2px solid var(--line);
+  background-color: var(--field-bg);
+}
+
+[data-theme="machinarium"] .repair-count {
+  border: 1.5px solid currentColor;
+}
+
+[data-theme="machinarium"] ::-webkit-scrollbar-thumb {
+  background: #8a6a45;
+}
+
+/* Сторінка клубу — постер у залізній рамці */
+[data-theme="machinarium"] .club-poster {
+  border: 3px solid #1f160e;
+  box-shadow: var(--ink-shadow);
+}
+
+/* Рукописний шрифт має одну товщину — без штучного жирного */
+[data-theme="machinarium"] h2,
+[data-theme="machinarium"] h3,
+[data-theme="machinarium"] .pill-nav-link,
+[data-theme="machinarium"] .type-tab,
+[data-theme="machinarium"] .primary-button,
+[data-theme="machinarium"] .ghost-button,
+[data-theme="machinarium"] .kpi-label,
+[data-theme="machinarium"] .repair-count b,
+[data-theme="machinarium"] label,
+[data-theme="machinarium"] th {
+  font-weight: 400;
+}
+
+[data-theme="machinarium"] label {
+  font-size: 0.95rem;
+}
+
+[data-theme="machinarium"] .club-intro .auth-title,
+[data-theme="machinarium"] .mfa-card .auth-title {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+[data-theme="machinarium"] .col-actions,
+[data-theme="machinarium"] th.col-actions {
+  background: var(--field-bg);
+}
+
+[data-theme="machinarium"] tbody tr:hover td.col-actions {
+  background: color-mix(in srgb, var(--text) 4%, var(--field-bg));
 }

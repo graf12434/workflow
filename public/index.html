@@ -9,9 +9,9 @@
     <link rel="apple-touch-icon" href="./club-icon.png?v=20261124-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261124-10" />
-    <script src="./theme-init.js?v=20261124-6"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Amatic+SC:wght@700&family=Neucha&family=Kurale&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20261124-12" />
+    <script src="./theme-init.js?v=20261124-11"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous"></script>
   </head>
   <body class="is-guest">
@@ -39,23 +39,6 @@
         </div>
       </header>
 
-      <section id="authView" class="auth-view club-view" hidden>
-        <figure class="club-poster">
-          <img src="./club.webp?v=20261124-8" alt="Клуб любителів Machinarium" width="900" height="900" />
-          <span class="club-led club-led--main" aria-hidden="true"></span>
-          <span class="club-led club-led--small" aria-hidden="true"></span>
-        </figure>
-        <form id="loginForm" class="panel login-form club-form">
-          <div class="club-intro">
-            <h1 class="auth-title">Вхід для членів клубу</h1>
-            <p>Закрита спільнота шанувальників Machinarium: арти, проходження, теорії й обговорення. Нових членів запрошують адміністратори клубу.</p>
-          </div>
-          <label>Email<input id="email" type="email" autocomplete="email" required /></label>
-          <label>Пароль<input id="password" type="password" autocomplete="current-password" required /></label>
-          <button class="primary-button" type="submit">Увійти</button>
-          <p id="authMessage" class="message" role="status"></p>
-        </form>
-      </section>
 
       <main id="appView" class="page" hidden>
         <div class="page-head">
@@ -153,6 +136,24 @@
           </aside>
         </div>
       </main>
+
+      <section id="authView" class="auth-view club-view" hidden>
+        <figure class="club-poster">
+          <img src="./club.webp?v=20261124-8" alt="Клуб любителів Machinarium" width="900" height="900" />
+          <span class="club-led club-led--main" aria-hidden="true"></span>
+          <span class="club-led club-led--small" aria-hidden="true"></span>
+        </figure>
+        <form id="loginForm" class="panel login-form club-form">
+          <div class="club-intro">
+            <h1 class="auth-title">Вхід для членів клубу</h1>
+            <p>Закрита спільнота шанувальників Machinarium: арти, проходження, теорії й обговорення. Нових членів запрошують адміністратори клубу.</p>
+          </div>
+          <label>Email<input id="email" type="email" autocomplete="email" required /></label>
+          <label>Пароль<input id="password" type="password" autocomplete="current-password" required /></label>
+          <button class="primary-button" type="submit">Увійти</button>
+          <p id="authMessage" class="message" role="status"></p>
+        </form>
+      </section>
     </div>
 
     <div id="historyLayer" class="layer layer--center" hidden>
@@ -168,8 +169,8 @@
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./date-picker.js?v=20261124-10"></script>
+    <script src="./date-picker.js?v=20261124-11"></script>
     <script src="./pill-nav.js?v=20260929-2"></script>
-    <script type="module" src="./js/journal.js?v=20261124-10"></script>
+    <script type="module" src="./js/journal.js?v=20261124-11"></script>
   </body>
 </html>
