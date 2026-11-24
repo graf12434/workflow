@@ -275,6 +275,7 @@
   document.addEventListener("scroll", () => current && position(), true);
 
   function enhance(input) {
+    if (input.closest(".date-field")) return;
     const field = document.createElement("div");
     field.className = "date-field";
 
@@ -323,4 +324,7 @@
   }
 
   document.querySelectorAll('input[type="date"]').forEach(enhance);
+
+  // Для полів, які сторінка створює пізніше (бокові панелі)
+  window.DatePicker = { enhance };
 })();

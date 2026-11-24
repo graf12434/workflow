@@ -3,367 +3,170 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Workflow</title>
+    <title>Журнал подій — Workflow</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=20260929-1" />
     <link rel="icon" type="image/png" href="./favicon.png?v=20260929-1" />
     <link rel="apple-touch-icon" href="./favicon.png?v=20260929-1" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261105-22" />
+    <link rel="stylesheet" href="./styles.css?v=20261124-3" />
+    <script>try{var t=localStorage.getItem("wf-theme");if(t&&t!=="graphite")document.documentElement.dataset.theme=t}catch(e){}</script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 8 100 164" width="22" height="36" fill="currentColor">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M43.6146 18.7621C44.3699 15.7789 46.4468 11.5874 48.146 9.58599C48.9013 8.71747 49.6565 8 49.8453 8C50.4117 8 52.753 10.9832 53.9613 13.2866C56.869 18.7243 57.02 21.3299 56.076 47.4609C55.0942 74.2716 55.3585 81.5219 57.5864 90.1693C58.7571 94.5874 60.5696 99.1565 61.778 100.705C66.2716 106.369 68.8394 110.976 70.7653 116.753C72.1247 120.794 73.2575 127.213 73.2575 130.687V132.613H68.7261H64.1947V130.914C64.1947 128.12 63.0619 121.36 62.0801 118.415C60.192 112.562 56.5291 106.596 52.3376 102.442L49.9208 100.025L48.788 100.856C45.7671 102.97 42.0287 108.031 39.6497 113.091C37.7616 117.093 36.8176 120.832 35.9868 127.327L35.3449 132.613H31.0023H26.6974L26.924 128.157C27.3772 118.717 31.0023 109.277 37.1196 101.724C40.3671 97.6461 42.5196 91.5287 43.6524 82.9568C44.3699 77.5947 44.3699 68.3053 43.6524 48.0273C42.8972 27.4472 42.8972 21.6319 43.6146 18.7621ZM0 143.564V83.9009C0 27.2584 0.0377616 24.2753 0.679709 24.5018C2.37898 25.1438 7.32575 28.8822 10.5355 31.9409C20.6556 41.7589 26.0555 53.7671 27.566 69.7402C27.7925 72.2325 28.4723 78.4254 29.0764 83.5232C29.6806 88.6211 30.2848 94.1343 30.4359 95.7958L30.6624 98.8167L28.8499 98.8545C24.1297 98.93 19.7871 103.763 20.5801 108.031C20.9199 110.032 22.3549 111.958 24.5073 113.317C25.5646 113.997 26.4331 114.714 26.4331 114.903C26.4331 115.092 26.0933 116.451 25.7157 117.962C25.3003 119.472 24.8849 121.172 24.7716 121.738C24.4695 123.06 24.1297 123.06 21.4486 121.7C16.9927 119.435 14.1984 116.225 12.8012 111.807C10.6865 105.085 12.99 97.9859 18.6542 93.8322C19.9381 92.8881 21.071 91.9441 21.222 91.6797C21.3731 91.4532 21.222 89.414 20.9577 87.2239C20.6556 84.9959 19.9759 79.1429 19.4472 74.1961C18.3899 64.2648 17.2948 59.2425 15.1046 53.8804C13.8585 50.7462 10.8753 45.384 9.28936 43.3071C8.76069 42.6274 8.72293 47.1966 8.68517 89.0742V135.634L25.6024 135.71L42.4818 135.823V139.599V143.375L39.6875 143.489L36.9309 143.602L37.1952 144.999C37.8371 148.36 40.707 153.986 43.6902 157.725L45.5027 159.991L45.616 147.038C45.6915 136.389 45.616 133.935 45.1629 133.066C44.2566 131.329 42.2175 129.592 40.2916 128.913L38.4413 128.271L38.7057 126.194C39.121 122.72 39.6875 120.53 40.1406 120.53C41.1224 120.53 44.5209 122.418 47.1642 124.419L49.9586 126.496L52.5642 124.532C55.3963 122.342 57.8885 120.983 59.2857 120.832C60.3053 120.718 60.5319 121.36 61.0983 125.552L61.4381 128.082L59.2102 129.102C56.9067 130.121 54.9054 132.009 54.5655 133.482C54.4522 133.935 54.4145 140.09 54.4522 147.114L54.5655 159.953L56.7179 157.121C57.8885 155.572 59.4368 153.118 60.1542 151.683C61.3626 149.304 63.0619 144.697 63.0619 143.866C63.0619 143.715 61.778 143.564 60.2298 143.564H57.3599L57.4732 139.675L57.5865 135.823L74.5037 135.71L91.3831 135.634V88.9231C91.3831 61.1306 91.232 42.3631 91.0432 42.5519C89.8349 43.8358 85.8321 51.086 84.6238 54.258C82.3581 59.9978 81.6406 63.3963 80.4322 73.9696C79.828 79.3317 79.1106 85.4868 78.8462 87.6393L78.3931 91.6042L79.677 92.5483C84.1329 95.9846 86.021 98.4013 87.2671 102.442C89.5328 109.73 85.6056 118.302 78.4686 121.662C77.147 122.304 75.9008 122.795 75.712 122.795C75.4855 122.795 74.9568 121.323 74.5037 119.472C74.0505 117.66 73.5596 115.847 73.4463 115.432C73.2953 114.828 73.6351 114.412 75.1078 113.468C77.9022 111.656 79.035 109.956 79.2239 107.275C79.3749 105.425 79.2239 104.821 78.3931 103.386C77.8267 102.442 76.6561 101.158 75.7498 100.554C73.975 99.3076 71.0674 98.4391 69.859 98.7412C69.4058 98.8545 69.1037 98.7412 69.1037 98.5146C69.1037 97.7971 70.5764 84.8449 71.1806 80.1247C71.4827 77.7457 71.8981 73.8185 72.1247 71.4395C73.6351 54.3713 78.5442 42.7785 88.551 32.6961C92.4027 28.8444 99.1242 23.8977 99.7284 24.5018C99.9172 24.6906 100.031 51.5014 99.9927 84.1274L99.8795 143.375L86.021 143.489C72.6156 143.564 72.1247 143.602 72.1247 144.282C72.1247 145.301 69.9723 151.305 68.7261 153.76C66.9136 157.309 63.8549 161.35 60.4186 164.748C57.02 168.109 51.2425 172.263 49.9964 172.263C48.7125 172.263 42.935 167.996 39.2721 164.333C33.9477 159.009 30.5869 153.533 28.51 146.849L27.4905 143.564H13.7452H0Z"/>
-            </svg>
-          </span>
-          <div>
-            <p class="eyebrow">Workflow / Тактична панель</p>
-            <h1>Журнал</h1>
-          </div>
-        </div>
+        <a class="brand" href="./index.html" aria-label="Workflow — на головну">
+          <span class="brand-mark"><span class="brand-glyph"></span></span>
+          <span class="brand-name">Workflow</span>
+        </a>
+        <nav id="mainNav" class="pill-nav main-nav" data-pill-nav aria-label="Розділи" hidden>
+          <span class="pill-nav-indicator" aria-hidden="true"></span>
+          <a class="pill-nav-link is-active" href="./index.html" aria-current="page">Журнал</a>
+          <a class="pill-nav-link" href="./assets.html">Засоби</a>
+          <a class="pill-nav-link" href="./reports.html">Звіти</a>
+        </nav>
         <div class="user-panel">
-          <span id="dateBadge" class="role-badge date-badge"></span>
-          <span id="connectionStatus" class="status-dot offline">Офлайн</span>
-          <span id="userRole" class="role-badge">Гість</span>
+          <span id="dateBadge" class="date-badge"></span>
+          <span id="connectionStatus" class="status-dot">Офлайн</span>
+          <span id="userRole" class="role-badge"></span>
           <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
         </div>
       </header>
-      <script>
-        (function () {
-          var el = document.getElementById("dateBadge");
-          if (!el) return;
-          var days = ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
-          var now = new Date();
-          var dd = String(now.getDate()).padStart(2, "0");
-          var mm = String(now.getMonth() + 1).padStart(2, "0");
-          var wd = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
-          var dayNum = wd.getUTCDay() || 7;
-          wd.setUTCDate(wd.getUTCDate() + 4 - dayNum);
-          var yearStart = new Date(Date.UTC(wd.getUTCFullYear(), 0, 1));
-          var week = Math.ceil(((wd - yearStart) / 86400000 + 1) / 7);
-          el.textContent = days[now.getDay()] + ", " + dd + "." + mm + "." + now.getFullYear() + " · " + week + " тиж.";
-        })();
-      </script>
 
-      <div class="page-nav-bar">
-        <nav class="page-nav pill-nav" data-pill-nav aria-label="Розділи">
-          <span class="pill-nav-indicator" aria-hidden="true"></span>
-          <a class="pill-nav-link is-active" href="./index.html" aria-current="page">Журнал</a>
-          <a id="rebMenuButton" class="pill-nav-link" href="./reb.html" hidden>Засоби РЕБ</a>
-          <a id="rerMenuButton" class="pill-nav-link" href="./rer.html" hidden>Засоби РЕР</a>
-          <a id="adrMenuButton" class="pill-nav-link" href="./adr.html" hidden>АДР</a>
-          <a id="specMenuButton" class="pill-nav-link" href="./spec.html" hidden>Спец обладнання</a>
-          <a id="partsMenuButton" class="pill-nav-link" href="./parts.html" hidden>Запчастини</a>
-          <a id="otherMenuButton" class="pill-nav-link" href="./other.html" hidden>Інше</a>
-        </nav>
-        <button id="reportButton" class="ghost-button report-button" type="button" hidden>
-          <svg class="report-button-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="5" y="3" width="15" height="18" rx="2" />
-            <path d="M3 7h4M3 12h4M3 17h4" />
-            <path d="M10 8h6M10 12h6M10 16h3" />
+      <section id="authView" class="auth-view" hidden>
+        <div class="auth-copy">
+          <svg class="auth-art" viewBox="-8 -8 80 80" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <circle class="auth-ring" cx="32" cy="12" r="12" stroke-width="1" />
+              <circle class="auth-ring auth-ring--late" cx="32" cy="12" r="12" stroke-width="1" />
+              <path class="auth-wave" d="M17.5 16q-5 7 0 14M46.5 16q5 7 0 14" stroke-width="2.2" />
+              <path class="auth-wave auth-wave--outer" d="M12 11.5q-8 11.5 0 23M52 11.5q8 11.5 0 23" stroke-width="2.2" />
+              <path d="M24 38V22M32 38V13M40 38V22" stroke-width="2.2" />
+              <rect x="18" y="38" width="28" height="15" rx="3.5" stroke-width="2.2" />
+            </g>
+            <g fill="currentColor">
+              <circle cx="24" cy="21" r="2" />
+              <circle class="auth-tip" cx="32" cy="12" r="2.2" />
+              <circle cx="40" cy="21" r="2" />
+              <circle class="auth-led" cx="24" cy="45.5" r="1.7" />
+              <rect x="29" y="44.2" width="12" height="2.6" rx="1.3" opacity="0.6" />
+            </g>
           </svg>
-          Звіт
-        </button>
-      </div>
+          <h2 class="auth-title">Вхід до журналу</h2>
+          <p>Облік засобів РЕБ і РЕР: де вони стоять, у якому стані й що з ними відбувалось.</p>
+        </div>
+        <form id="loginForm" class="panel login-form">
+          <label>Email<input id="email" type="email" autocomplete="email" required /></label>
+          <label>Пароль<input id="password" type="password" autocomplete="current-password" required /></label>
+          <button class="primary-button" type="submit">Увійти</button>
+          <p id="authMessage" class="message" role="status"></p>
+        </form>
+      </section>
 
-      <main>
-        <section id="authView" class="auth-grid" hidden>
-          <div class="auth-copy">
-            <svg class="auth-art" viewBox="-8 -8 80 80" aria-hidden="true">
-              <g fill="none" stroke="#c8f031" stroke-linecap="round" stroke-linejoin="round">
-                <circle class="auth-ring" cx="32" cy="12" r="12" stroke-width="1" />
-                <circle class="auth-ring auth-ring--late" cx="32" cy="12" r="12" stroke-width="1" />
-                <path class="auth-wave" d="M17.5 16q-5 7 0 14M46.5 16q5 7 0 14" stroke-width="2.2" />
-                <path class="auth-wave auth-wave--outer" d="M12 11.5q-8 11.5 0 23M52 11.5q8 11.5 0 23" stroke-width="2.2" />
-                <path d="M24 38V22M32 38V13M40 38V22" stroke-width="2.2" />
-                <rect x="18" y="38" width="28" height="15" rx="3.5" stroke-width="2.2" />
-              </g>
-              <g fill="#c8f031">
-                <circle cx="24" cy="21" r="2" />
-                <circle class="auth-tip" cx="32" cy="12" r="2.2" />
-                <circle cx="40" cy="21" r="2" />
-                <circle class="auth-led" cx="24" cy="45.5" r="1.7" />
-                <rect x="29" y="44.2" width="12" height="2.6" rx="1.3" opacity="0.6" />
-              </g>
-            </svg>
-            <h2>Вхід до журналу</h2>
-            <p>Авторизовані користувачі можуть вносити записи, переглядати зведення та фільтрувати події за періодами.</p>
+      <main id="appView" class="page" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Журнал подій</h1>
+            <p id="journalSummary" class="page-sub"></p>
           </div>
-          <form id="loginForm" class="panel compact-form">
-            <label>
-              Email
-              <input id="email" type="email" autocomplete="email" required />
-            </label>
-            <label>
-              Пароль
-              <input id="password" type="password" autocomplete="current-password" required />
-            </label>
-            <button class="primary-button" type="submit">Увійти</button>
-            <p id="authMessage" class="message"></p>
-          </form>
+          <div class="page-actions">
+            <button id="newEventButton" class="primary-button" type="button" data-can="create">Нова подія</button>
+          </div>
+        </div>
+        <p id="pageMessage" class="message page-message" role="status"></p>
+
+        <section class="kpi-strip" aria-label="Зведення">
+          <a class="kpi" href="./assets.html">
+            <span class="kpi-label">На обліку</span>
+            <strong id="kpiTotal" class="kpi-value">0</strong>
+            <span id="kpiTotalSub" class="kpi-sub"></span>
+          </a>
+          <a class="kpi" href="./assets.html?status=in_formation">
+            <span class="kpi-label">В строю</span>
+            <strong id="kpiInService" class="kpi-value">0</strong>
+            <span id="kpiInServiceSub" class="kpi-sub"></span>
+          </a>
+          <div class="kpi kpi--lead">
+            <span class="kpi-label">Розгорнуто зараз</span>
+            <strong id="kpiDeployed" class="kpi-value">0</strong>
+            <span id="kpiDeployedSub" class="kpi-sub"></span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Подій за 7 днів</span>
+            <strong id="kpiWeek" class="kpi-value">0</strong>
+            <span id="kpiWeekSub" class="kpi-sub"></span>
+          </div>
         </section>
 
-        <section id="dashboardView" hidden>
-          <section class="stats-grid" aria-label="Статистика">
-            <article class="panel stat-card">
-              <div class="stat-card-head">
-                <div>
-                  <span class="stat-card-label">Засоби за типами</span>
-                  <strong id="equipmentTotal" class="stat-card-value">0</strong>
-                </div>
-                <span class="stat-card-hint">усього на обліку</span>
-              </div>
-              <div id="typeBars" class="type-bars"></div>
-            </article>
+        <div class="journal-grid">
+          <section class="panel journal-panel" aria-labelledby="journalTitle">
+            <div class="panel-head">
+              <h2 id="journalTitle">Події</h2>
+              <span id="journalCount" class="panel-meta"></span>
+            </div>
+            <div class="toolbar">
+              <input id="searchInput" type="search" placeholder="Пошук: засіб, позиція, серійний №, район, примітка" aria-label="Пошук у журналі" />
+              <select id="actionFilter" aria-label="Дія">
+                <option value="">Усі дії</option>
+              </select>
+              <input id="fromDate" type="date" placeholder="З дати" />
+              <input id="toDate" type="date" placeholder="По дату" />
+            </div>
+            <div class="table-wrap table-journal">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Засіб · серійний №</th>
+                    <th>Позиція · район</th>
+                    <th>Дія</th>
+                    <th>Примітка</th>
+                    <th class="col-actions"><span class="sr-only">Керування</span></th>
+                  </tr>
+                </thead>
+                <tbody id="recordsBody"></tbody>
+              </table>
+            </div>
+          </section>
 
-            <article class="panel stat-card">
-              <div class="stat-card-head">
-                <div>
-                  <span class="stat-card-label">Стан засобів · в строю</span>
-                  <strong id="inServiceTotal" class="stat-card-value">0</strong>
-                </div>
-                <span id="inServiceShare" class="stat-card-hint">немає даних</span>
+          <aside class="journal-rail">
+            <section class="panel rail-card" aria-labelledby="areasTitle">
+              <div class="panel-head">
+                <h2 id="areasTitle">Де стоять засоби</h2>
+                <span id="areasMeta" class="panel-meta"></span>
               </div>
-              <div id="statusBar" class="status-bar" aria-hidden="true"></div>
-              <ul id="statusLegend" class="status-legend"></ul>
-            </article>
-
-            <article class="panel stat-card">
-              <div class="stat-card-head">
-                <div>
-                  <span class="stat-card-label">Роботи за 7 днів</span>
-                  <strong id="weekWorkTotal" class="stat-card-value">0</strong>
-                </div>
-                <span id="weekWorkTrend" class="trend"></span>
+              <ul id="deployAreas" class="deploy-areas"></ul>
+            </section>
+            <section class="panel rail-card" aria-labelledby="weekTitle">
+              <div class="panel-head">
+                <h2 id="weekTitle">Роботи за 7 днів</h2>
+                <span id="weekMeta" class="panel-meta"></span>
               </div>
               <div id="activityChart" class="activity-chart"></div>
               <div id="actionChips" class="action-chips"></div>
-            </article>
-
-            <article class="panel stat-card">
-              <div class="stat-card-head">
-                <div>
-                  <span class="stat-card-label">Розгорнуто зараз</span>
-                  <strong id="activeTotal" class="stat-card-value stat-card-value--lead">0</strong>
-                </div>
-                <span id="activeAreasHint" class="stat-card-hint">за останньою дією засобу</span>
-              </div>
-              <ul id="deployAreas" class="deploy-areas"></ul>
-            </article>
-          </section>
-
-          <section class="work-grid">
-            <form id="entryForm" class="panel entry-form">
-              <div class="section-head">
-                <div>
-                  <h2>Оперативний запис</h2>
-                </div>
-                <button id="resetFormButton" class="ghost-button" type="button">Очистити</button>
-              </div>
-
-              <input id="recordId" type="hidden" />
-              <label>
-                Дата
-                <input id="recordDate" type="date" required />
-              </label>
-              <label>
-                Засоби
-                <select id="assetVariantFilter">
-                  <option value="">Усі</option>
-                  <option value="РЕБ">РЕБ</option>
-                  <option value="РЕР">РЕР</option>
-                  <option value="Інше">Інше</option>
-                </select>
-              </label>
-              <label class="wide">
-                Засіб
-                <div class="field-row">
-                  <select id="asset" required>
-                    <option value="" disabled selected>Оберіть засіб</option>
-                  </select>
-                </div>
-              </label>
-              <label>
-                Назва
-                <input id="name" type="text" required />
-              </label>
-              <label>
-                Серійний №
-                <input id="serialNumber" type="text" required />
-              </label>
-              <label>
-                Район
-                <div class="field-row">
-                  <select id="area" required>
-                    <option value="" disabled selected>Оберіть район</option>
-                  </select>
-                  <button id="addAreaButton" class="icon-button" type="button" title="Додати район" hidden>+</button>
-                </div>
-              </label>
-              <label>
-                Дія
-                <select id="actionType" required>
-                  <option value="deploy">Розгортання</option>
-                  <option value="recover">Згортання</option>
-                  <option value="relocate">Переміщення</option>
-                  <option value="repair">Ремонт</option>
-                  <option value="maintenance">Обслуговування</option>
-                  <option value="destroyed">Знищено</option>
-                </select>
-              </label>
-              <label class="wide">
-                Примітка
-                <textarea id="note" rows="4" placeholder="Коротко про умови, відповідального або зміни"></textarea>
-              </label>
-              <button id="saveButton" class="primary-button wide" type="submit">Зберегти запис</button>
-              <p id="formMessage" class="message wide"></p>
-            </form>
-
-            <section class="panel operations-panel">
-              <div class="section-head">
-                <div>
-                  <h2>Журнал подій</h2>
-                </div>
-              </div>
-
-              <div class="filters">
-                <input id="searchInput" type="search" placeholder="Пошук: засіб, назва, серіал, район" />
-                <select id="actionFilter">
-                  <option value="">Усі дії</option>
-                  <option value="deploy">Розгортання</option>
-                  <option value="recover">Згортання</option>
-                  <option value="relocate">Переміщення</option>
-                  <option value="repair">Ремонт</option>
-                  <option value="maintenance">Обслуговування</option>
-                  <option value="destroyed">Знищено</option>
-                </select>
-                <input id="fromDate" type="date" placeholder="З дати" />
-                <input id="toDate" type="date" placeholder="По дату" />
-              </div>
-
-              <div class="intel-strip">
-                <div>
-                  <span>Топ район</span>
-                  <strong id="topArea">-</strong>
-                </div>
-                <div>
-                  <span>Топ засіб</span>
-                  <strong id="topAsset">-</strong>
-                </div>
-                <div>
-                  <span>У фільтрі</span>
-                  <strong id="filteredTotal">0</strong>
-                </div>
-              </div>
-
-              <div class="table-wrap table-wrap-journal">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Дата</th>
-                      <th>Засіб</th>
-                      <th>Назва</th>
-                      <th>Серійний №</th>
-                      <th>Район</th>
-                      <th>Дія</th>
-                      <th>Примітка</th>
-                      <th class="admin-only">Керування</th>
-                    </tr>
-                  </thead>
-                  <tbody id="recordsBody">
-                    <tr>
-                      <td colspan="8" class="empty-state">Немає записів</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </section>
-          </section>
-        </section>
-      </main>
-
-      <div id="reportModal" class="modal-overlay" hidden>
-        <form id="reportForm" class="panel modal-panel report-modal">
-          <header class="modal-head">
-            <div>
-              <h2>Друк звітів</h2>
-            </div>
-            <button id="cancelReportButton" class="icon-button modal-close" type="button" title="Закрити" aria-label="Закрити"><svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-          </header>
-
-          <section class="modal-section">
-            <div class="modal-section-head">
-              <div>
-                <h3>Звіт по засобах</h3>
-                <p>Оберіть категорії для друку</p>
-              </div>
-              <label class="checkbox-option select-all">
-                <input id="reportSelectAll" type="checkbox" checked />
-                Усі
-              </label>
-            </div>
-            <div class="report-categories">
-              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕБ" checked /> Засоби РЕБ</label>
-              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="РЕР" checked /> Засоби РЕР</label>
-              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="АДР" checked /> АДР</label>
-              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Спец обладнання" checked /> Спец обладнання</label>
-              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Запчастини" checked /> Запчастини</label>
-              <label class="checkbox-option"><input type="checkbox" class="reportCategory" value="Інше" checked /> Інше</label>
-            </div>
-            <button class="primary-button" type="submit">Друкувати засоби</button>
-          </section>
-
-          <section class="modal-section">
-            <div class="modal-section-head">
-              <div>
-                <h3>Звіт по журналу</h3>
-                <p>Події за обраний період</p>
-              </div>
-            </div>
-            <div class="date-range">
-              <label>
-                З дати
-                <input id="reportFromDate" type="date" />
-              </label>
-              <label>
-                По дату
-                <input id="reportToDate" type="date" />
-              </label>
-            </div>
-            <button id="printJournalReportButton" class="primary-button" type="button">Друкувати журнал</button>
-          </section>
-
-          <p id="reportModalMessage" class="message"></p>
-        </form>
-      </div>
-
-      <div id="recordHistoryModal" class="modal-overlay" hidden>
-        <div class="panel modal-panel history-panel">
-          <div class="section-head">
-            <div>
-              <h2>Історія запису</h2>
-            </div>
-          </div>
-          <div id="recordHistoryList" class="record-history-list">
-            <p class="empty-state">Завантаження…</p>
-          </div>
-          <div class="modal-actions">
-            <button id="closeRecordHistoryButton" class="ghost-button" type="button">Закрити</button>
-          </div>
+          </aside>
         </div>
+      </main>
+    </div>
+
+    <div id="historyLayer" class="layer layer--center" hidden>
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+        <header class="drawer-head">
+          <h2 id="historyTitle">Історія запису</h2>
+          <button class="icon-button" type="button" data-close-layer aria-label="Закрити">
+            <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
+        <div id="historyList" class="record-history-list"></div>
       </div>
     </div>
 
     <script src="./supabase-config.js?v=20260831-6"></script>
-    <script src="./print-kit.js?v=20260929-1"></script>
-    <script src="./date-picker.js?v=20260929-1"></script>
-    <script src="./app.js?v=20261105-22"></script>
+    <script src="./date-picker.js?v=20261124-3"></script>
     <script src="./pill-nav.js?v=20260929-2"></script>
+    <script type="module" src="./js/journal.js?v=20261124-3"></script>
   </body>
 </html>

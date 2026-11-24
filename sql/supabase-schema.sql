@@ -26,6 +26,9 @@ create index if not exists workflow_records_date_idx on public.workflow_records(
 create index if not exists workflow_records_serial_idx on public.workflow_records(lower(serial_number));
 create index if not exists workflow_records_area_idx on public.workflow_records(area);
 create index if not exists workflow_records_asset_idx on public.workflow_records(asset);
+-- Одна подія — один запис (дата, дія, засіб, номер, позиція)
+create unique index if not exists workflow_records_event_key
+  on public.workflow_records (date, action_type, lower(btrim(asset)), lower(btrim(serial_number)), lower(btrim(name)));
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -261,6 +264,10 @@ create index if not exists workflow_reb_far_variant_idx on public.workflow_reb_f
 create index if not exists workflow_reb_far_type_idx on public.workflow_reb_far(type);
 create index if not exists workflow_reb_far_category_idx on public.workflow_reb_far(category);
 create index if not exists workflow_reb_far_jam_mode_idx on public.workflow_reb_far(jam_mode);
+-- Засіб з назвою й номером — один на обліку; "Б/Н" (без номера) — виняток
+create unique index if not exists workflow_reb_far_name_serial_key
+  on public.workflow_reb_far (lower(btrim(name)), lower(btrim(serial_number)))
+  where lower(btrim(serial_number)) <> 'б/н';
 
 drop trigger if exists workflow_reb_far_set_updated_at on public.workflow_reb_far;
 create trigger workflow_reb_far_set_updated_at

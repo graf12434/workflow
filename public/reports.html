@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Звіти — Workflow</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=20260929-1" />
+    <link rel="icon" type="image/png" href="./favicon.png?v=20260929-1" />
+    <link rel="apple-touch-icon" href="./favicon.png?v=20260929-1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20261124-3" />
+    <script>try{var t=localStorage.getItem("wf-theme");if(t&&t!=="graphite")document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./index.html" aria-label="Workflow — на головну">
+          <span class="brand-mark"><span class="brand-glyph"></span></span>
+          <span class="brand-name">Workflow</span>
+        </a>
+        <nav id="mainNav" class="pill-nav main-nav" data-pill-nav aria-label="Розділи" hidden>
+          <span class="pill-nav-indicator" aria-hidden="true"></span>
+          <a class="pill-nav-link" href="./index.html">Журнал</a>
+          <a class="pill-nav-link" href="./assets.html">Засоби</a>
+          <a class="pill-nav-link is-active" href="./reports.html" aria-current="page">Звіти</a>
+        </nav>
+        <div class="user-panel">
+          <span id="dateBadge" class="date-badge"></span>
+          <span id="connectionStatus" class="status-dot">Офлайн</span>
+          <span id="userRole" class="role-badge"></span>
+          <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
+        </div>
+      </header>
+
+      <section id="authView" class="auth-view" hidden>
+        <div class="auth-copy">
+          <h2 class="auth-title">Вхід до журналу</h2>
+          <p>Увійдіть, щоб друкувати звіти.</p>
+        </div>
+        <form id="loginForm" class="panel login-form">
+          <label>Email<input id="email" type="email" autocomplete="email" required /></label>
+          <label>Пароль<input id="password" type="password" autocomplete="current-password" required /></label>
+          <button class="primary-button" type="submit">Увійти</button>
+          <p id="authMessage" class="message" role="status"></p>
+        </form>
+      </section>
+
+      <main id="appView" class="page" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Звіти</h1>
+            <p class="page-sub">Друк або збереження у PDF через вікно друку браузера</p>
+          </div>
+        </div>
+        <p id="pageMessage" class="message page-message" role="status"></p>
+
+        <div class="reports-grid">
+          <section class="panel report-card" aria-labelledby="equipmentReportTitle">
+            <div class="panel-head">
+              <h2 id="equipmentReportTitle">Засоби на обліку</h2>
+              <label class="checkbox-option"><input id="variantsAll" type="checkbox" checked /> Усі типи</label>
+            </div>
+            <div id="variantTiles" class="check-tiles"></div>
+            <label>Стан<select id="equipmentStatus"></select></label>
+            <div class="report-sample" aria-label="Перші рядки звіту">
+              <ul id="equipmentSample" class="sample-list"></ul>
+            </div>
+            <div class="report-foot">
+              <p id="equipmentPreview" class="report-preview" role="status"></p>
+              <button id="printEquipment" class="primary-button" type="button">Друкувати</button>
+            </div>
+          </section>
+
+          <section class="panel report-card" aria-labelledby="journalReportTitle">
+            <div class="panel-head">
+              <h2 id="journalReportTitle">Журнал подій за період</h2>
+            </div>
+            <div class="date-range">
+              <label>З дати<input id="journalFrom" type="date" /></label>
+              <label>По дату<input id="journalTo" type="date" /></label>
+            </div>
+            <label>Дія<select id="journalAction"></select></label>
+            <div class="report-sample" aria-label="Перші рядки звіту">
+              <ul id="journalSample" class="sample-list"></ul>
+            </div>
+            <div class="report-foot">
+              <p id="journalPreview" class="report-preview message" role="status"></p>
+              <button id="printJournal" class="primary-button" type="button">Друкувати</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="./supabase-config.js?v=20260831-6"></script>
+    <script src="./date-picker.js?v=20261124-3"></script>
+    <script src="./print-kit.js?v=20260929-1"></script>
+    <script src="./pill-nav.js?v=20260929-2"></script>
+    <script type="module" src="./js/reports.js?v=20261124-3"></script>
+  </body>
+</html>

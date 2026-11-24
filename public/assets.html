@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Засоби — Workflow</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=20260929-1" />
+    <link rel="icon" type="image/png" href="./favicon.png?v=20260929-1" />
+    <link rel="apple-touch-icon" href="./favicon.png?v=20260929-1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20261124-3" />
+    <script>try{var t=localStorage.getItem("wf-theme");if(t&&t!=="graphite")document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./index.html" aria-label="Workflow — на головну">
+          <span class="brand-mark"><span class="brand-glyph"></span></span>
+          <span class="brand-name">Workflow</span>
+        </a>
+        <nav id="mainNav" class="pill-nav main-nav" data-pill-nav aria-label="Розділи" hidden>
+          <span class="pill-nav-indicator" aria-hidden="true"></span>
+          <a class="pill-nav-link" href="./index.html">Журнал</a>
+          <a class="pill-nav-link is-active" href="./assets.html" aria-current="page">Засоби</a>
+          <a class="pill-nav-link" href="./reports.html">Звіти</a>
+        </nav>
+        <div class="user-panel">
+          <span id="dateBadge" class="date-badge"></span>
+          <span id="connectionStatus" class="status-dot">Офлайн</span>
+          <span id="userRole" class="role-badge"></span>
+          <button id="logoutButton" class="ghost-button" type="button" hidden>Вийти</button>
+        </div>
+      </header>
+
+      <section id="authView" class="auth-view" hidden>
+        <div class="auth-copy">
+          <h2 class="auth-title">Вхід до журналу</h2>
+          <p>Увійдіть, щоб переглянути засоби на обліку.</p>
+        </div>
+        <form id="loginForm" class="panel login-form">
+          <label>Email<input id="email" type="email" autocomplete="email" required /></label>
+          <label>Пароль<input id="password" type="password" autocomplete="current-password" required /></label>
+          <button class="primary-button" type="submit">Увійти</button>
+          <p id="authMessage" class="message" role="status"></p>
+        </form>
+      </section>
+
+      <main id="appView" class="page" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Засоби</h1>
+            <p id="assetsSummary" class="page-sub"></p>
+          </div>
+          <div class="page-actions">
+            <button id="pdfButton" class="ghost-button" type="button">
+              <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/></svg>
+              PDF
+            </button>
+            <button id="newDeviceButton" class="primary-button" type="button" data-can="create">Додати засіб</button>
+          </div>
+        </div>
+        <p id="pageMessage" class="message page-message" role="status"></p>
+
+        <div id="typeTabs" class="type-tabs" role="toolbar" aria-label="Тип засобу"></div>
+
+        <section class="panel assets-panel" aria-labelledby="assetsTitle">
+          <div class="panel-head">
+            <h2 id="assetsTitle">Усі засоби</h2>
+            <span id="assetsCount" class="panel-meta"></span>
+          </div>
+          <div class="toolbar">
+            <input id="assetSearch" type="search" placeholder="Пошук: назва, серійний №, примітка" aria-label="Пошук засобу" />
+            <select id="modeFilter" aria-label="Режим" hidden></select>
+            <select id="categoryFilter" aria-label="Категорія" hidden></select>
+            <select id="rangeFilter" aria-label="Дальність" hidden></select>
+            <select id="statusFilter" aria-label="Стан"></select>
+            <select id="ownershipFilter" aria-label="Належність"></select>
+          </div>
+          <div class="table-wrap table-assets">
+            <table>
+              <thead>
+                <tr>
+                  <th>Назва</th>
+                  <th>Серійний №</th>
+                  <th>Тип</th>
+                  <th>Стан</th>
+                  <th>Належність</th>
+                  <th>Остання подія</th>
+                  <th>Примітка</th>
+                </tr>
+              </thead>
+              <tbody id="assetsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="deviceLayer" class="layer" hidden>
+      <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="deviceTitle">
+        <header class="drawer-head">
+          <h2 id="deviceTitle">Засіб</h2>
+          <button class="icon-button" type="button" data-close-layer aria-label="Закрити">
+            <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
+
+        <div id="deviceCard" class="drawer-body"></div>
+
+        <form id="deviceForm" class="drawer-body form-grid" novalidate hidden>
+          <input id="deviceId" type="hidden" />
+          <label>Тип<select id="deviceVariant"></select></label>
+          <label id="deviceModeField">Режим<select id="deviceMode"></select></label>
+          <label id="deviceCategoryField">Категорія<select id="deviceCategory"></select></label>
+          <label id="deviceRangeField">Дальність<select id="deviceRange"></select></label>
+          <label class="wide">Назва
+            <span class="field-row">
+              <select id="deviceName"></select>
+              <button id="addAssetName" class="icon-button" type="button" data-can="admin" title="Додати назву" aria-label="Додати назву">
+                <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+              <button id="renameAssetName" class="icon-button" type="button" data-can="admin" title="Перейменувати назву" aria-label="Перейменувати назву">
+                <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>
+              </button>
+            </span>
+          </label>
+          <label>Серійний №<input id="deviceSerial" autocomplete="off" placeholder="або «Б/Н»" /></label>
+          <label>Належність<select id="deviceOwnership"></select></label>
+          <label class="wide">Стан<select id="deviceStatus"></select></label>
+          <label class="wide">Примітка<textarea id="deviceNote" rows="3" placeholder="Позивний, місце зберігання, рапорт тощо"></textarea></label>
+        </form>
+
+        <footer id="deviceFormFoot" class="drawer-foot" hidden>
+          <p id="deviceMessage" class="message" role="status"></p>
+          <button id="deviceCancel" class="ghost-button" type="button">Скасувати</button>
+          <button id="deviceSave" class="primary-button" type="submit" form="deviceForm">Додати засіб</button>
+        </footer>
+      </aside>
+    </div>
+
+    <script src="./supabase-config.js?v=20260831-6"></script>
+    <script src="./date-picker.js?v=20261124-3"></script>
+    <script src="./print-kit.js?v=20260929-1"></script>
+    <script src="./pill-nav.js?v=20260929-2"></script>
+    <script type="module" src="./js/assets.js?v=20261124-3"></script>
+  </body>
+</html>
