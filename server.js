@@ -24,6 +24,13 @@ function siteDir(arg) {
 const site = siteDir(process.argv[2]);
 const SHARED_FROM_ROOT = new Set(["supabase-config.js"]);
 
+// Ті самі заголовки безпеки, що й на Vercel (vercel.json) — щоб CSP перевірялась і локально
+const securityHeaders = Object.fromEntries(
+  (JSON.parse(fs.readFileSync(path.join(__dirname, "vercel.json"), "utf8")).headers || [])
+    .flatMap((rule) => rule.headers)
+    .map(({ key, value }) => [key, value])
+);
+
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -45,7 +52,14 @@ function resolveFile(relativePath) {
 }
 
 const server = http.createServer((req, res) => {
-  const urlPath = decodeURIComponent(req.url.split("?")[0]);
+  let urlPath;
+  try {
+    urlPath = decodeURIComponent(req.url.split("?")[0]);
+  } catch {
+    res.writeHead(400);
+    res.end("Bad request");
+    return;
+  }
   const relativePath = urlPath === "/" ? "index.html" : urlPath.replace(/^\/+/, "");
   const filePath = resolveFile(relativePath);
 
@@ -63,6 +77,7 @@ const server = http.createServer((req, res) => {
     }
 
     res.writeHead(200, {
+      ...securityHeaders,
       "Content-Type": types[path.extname(filePath)] || "application/octet-stream",
       "Cache-Control": "no-store"
     });
@@ -70,6 +85,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(port, () => {
+// Лише цей комп'ютер: сервер не видно з локальної мережі
+server.listen(port, "127.0.0.1", () => {
   console.log(`Workflow (${path.relative(__dirname, site) || "public"}) — http://localhost:${port}`);
 });
