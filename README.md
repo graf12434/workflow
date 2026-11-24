@@ -5,7 +5,7 @@
 ## Налаштування Supabase
 
 1. Створіть Supabase project.
-2. Відкрийте SQL Editor і виконайте `sql/supabase-schema.sql`, а потім `sql/supabase-harden-security.sql` і `sql/supabase-harden-v2.5.sql`.
+2. Відкрийте SQL Editor і виконайте `sql/supabase-schema.sql`, а потім `sql/supabase-harden-security.sql`, `sql/supabase-harden-v2.5.sql` і `sql/supabase-require-mfa.sql` (обов'язковий Google Authenticator).
 3. Увімкніть Email auth у Supabase Authentication.
 4. Створіть першого користувача.
 5. Призначте роль адміністратора:

@@ -2361,3 +2361,84 @@ body.has-layer {
 .repair-days.is-overdue {
   color: var(--red);
 }
+
+/* ---------- Другий крок входу (Google Authenticator) ---------- */
+.mfa-view {
+  display: grid;
+  justify-items: center;
+  padding-top: 32px;
+}
+
+.mfa-card {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 440px);
+  padding: 28px;
+}
+
+.mfa-card .auth-title {
+  font-size: 1.5rem;
+}
+
+.mfa-lead {
+  margin: 0;
+  color: var(--muted);
+}
+
+.mfa-setup {
+  display: grid;
+  gap: 14px;
+}
+
+.mfa-steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+/* QR-код завжди чорний на білому — так його читає будь-яка камера, в будь-якій темі */
+.mfa-qr {
+  justify-self: center;
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  border-radius: var(--r-md);
+  background: #ffffff;
+}
+
+.mfa-manual summary {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.mfa-secret {
+  display: block;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--field-bg);
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  word-break: break-all;
+  user-select: all;
+}
+
+#mfaCode {
+  font-size: 1.375rem;
+  letter-spacing: 0.4em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.mfa-logout {
+  justify-self: center;
+}
+
+.mfa-card .message:empty {
+  display: none;
+}

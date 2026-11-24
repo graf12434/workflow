@@ -421,6 +421,121 @@ function setupThemeSwitch() {
   });
 }
 
+/* ---------- Другий крок входу: код з Google Authenticator ---------- */
+
+// Без підтвердженого коду (рівень сесії aal2) база не віддає жодних даних — див.
+// sql/supabase-require-mfa.sql. Сайт лише проводить користувача через цей крок.
+function mfaView() {
+  let view = $("mfaView");
+  if (view) return view;
+  $("authView").insertAdjacentHTML(
+    "afterend",
+    `<section id="mfaView" class="mfa-view" hidden>
+      <form id="mfaForm" class="panel mfa-card" novalidate>
+        <h2 id="mfaTitle" class="auth-title"></h2>
+        <p id="mfaLead" class="mfa-lead"></p>
+        <div id="mfaSetup" class="mfa-setup" hidden>
+          <ol class="mfa-steps">
+            <li>Встановіть на телефон <b>Google Authenticator</b> (Play Маркет / App Store).</li>
+            <li>У застосунку натисніть <b>+</b> → <b>Сканувати QR-код</b> і наведіть камеру на код.</li>
+            <li>Введіть нижче 6 цифр, які покаже застосунок.</li>
+          </ol>
+          <img id="mfaQr" class="mfa-qr" alt="QR-код для Google Authenticator" width="200" height="200" />
+          <details class="mfa-manual">
+            <summary>Не сканується? Ввести ключ вручну</summary>
+            <code id="mfaSecret" class="mfa-secret"></code>
+          </details>
+        </div>
+        <label>Код з Google Authenticator
+          <input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" />
+        </label>
+        <button id="mfaSubmit" class="primary-button" type="submit">Підтвердити</button>
+        <p id="mfaMessage" class="message" role="status"></p>
+        <button id="mfaLogout" class="ghost-button mfa-logout" type="button">Вийти</button>
+      </form>
+    </section>`
+  );
+  return $("mfaView");
+}
+
+// Підключений (підтверджений) застосунок або новий — з QR-кодом
+async function prepareFactor() {
+  const { data, error } = await db.auth.mfa.listFactors();
+  if (error) throw error;
+  const verified = data?.totp?.[0];
+  if (verified) return { factorId: verified.id, enrolled: true };
+
+  // Незавершені спроби підключення (закрили сторінку до введення коду) — прибираємо
+  for (const factor of (data?.all || []).filter((item) => item.status !== "verified")) {
+    await db.auth.mfa.unenroll({ factorId: factor.id });
+  }
+  const { data: created, error: enrollError } = await db.auth.mfa.enroll({
+    factorType: "totp",
+    friendlyName: "Google Authenticator",
+    issuer: "Workflow"
+  });
+  if (enrollError) throw enrollError;
+  return { factorId: created.id, enrolled: false, qr: created.totp.qr_code, secret: created.totp.secret };
+}
+
+// true — сесія вже з другим фактором; false — показано крок з кодом
+async function requireSecondFactor() {
+  const { data: level } = await db.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (level?.currentLevel === "aal2") return true;
+
+  const view = mfaView();
+  $("authView").hidden = true;
+  $("appView").hidden = true;
+  view.hidden = false;
+
+  let factor;
+  try {
+    factor = await prepareFactor();
+  } catch (error) {
+    $("mfaTitle").textContent = "Двофакторний вхід";
+    setMessage($("mfaMessage"), `Не вдалося почати перевірку: ${error.message}`, true);
+    $("mfaSubmit").disabled = true;
+    return false;
+  }
+
+  $("mfaTitle").textContent = factor.enrolled ? "Код підтвердження" : "Підключіть Google Authenticator";
+  $("mfaLead").textContent = factor.enrolled
+    ? "Відкрийте Google Authenticator і введіть 6-значний код для Workflow."
+    : "Вхід до журналу — лише з кодом з телефона. Налаштування займе хвилину, робиться один раз.";
+  $("mfaSetup").hidden = factor.enrolled;
+  if (!factor.enrolled) {
+    $("mfaQr").src = factor.qr;
+    $("mfaSecret").textContent = factor.secret;
+  }
+  $("mfaCode").focus();
+
+  $("mfaCode").addEventListener("input", () => {
+    $("mfaCode").value = $("mfaCode").value.replace(/\D/g, "").slice(0, 6);
+  });
+  $("mfaForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const code = $("mfaCode").value;
+    if (code.length !== 6) {
+      setMessage($("mfaMessage"), "Введіть 6 цифр з Google Authenticator.", true);
+      return;
+    }
+    $("mfaSubmit").disabled = true;
+    const { error } = await db.auth.mfa.challengeAndVerify({ factorId: factor.factorId, code });
+    if (error) {
+      $("mfaSubmit").disabled = false;
+      $("mfaCode").select();
+      setMessage($("mfaMessage"), "Код не підійшов. Перевірте, що це код для Workflow, і введіть новий.", true);
+      return;
+    }
+    window.location.reload();
+  });
+  $("mfaLogout").addEventListener("click", async () => {
+    await db.auth.signOut();
+    window.location.href = "./index.html";
+  });
+  return false;
+}
+
 // Ініціалізація сторінки: шапка, сесія, права. onReady викликається для користувача, що увійшов
 export async function initPage(onReady) {
   renderDate();
@@ -457,6 +572,8 @@ export async function initPage(onReady) {
     showSignedOut();
     return;
   }
+
+  if (!(await requireSecondFactor())) return;
 
   await loadProfile();
   $("userRole").textContent = ROLE_LABELS[role()] || role();
