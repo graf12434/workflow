@@ -2,7 +2,7 @@
 import {
   db, state, $, can, initPage, load, escapeHtml, formatDate, parseDate, localISO, plural, icon,
   setMessage, ACTIONS, HISTORY_ACTIONS, devicesFor, deployedNow, actionPill, loadDisplayNames,
-  openLayerEl
+  openLayerEl, repairWatch, daysLabel, REPAIR_OVERDUE_DAYS
 } from "./core.js";
 import { openEventForm } from "./event-form.js";
 
@@ -197,7 +197,40 @@ function renderRecords() {
     .join("");
 }
 
+// Засоби в ремонті — перед очима, щоб не забути відмітити повернення
+function renderRepairs() {
+  const items = repairWatch();
+  $("repairWatch").hidden = !items.length;
+  if (!items.length) return;
+  const overdue = items.filter((item) => item.overdue).length;
+  $("repairMeta").textContent = overdue
+    ? `${items.length} · ${overdue} довше ${REPAIR_OVERDUE_DAYS} днів`
+    : `${items.length}`;
+  $("repairList").innerHTML = items
+    .map(({ device, event, since, days, overdue: late }) => {
+      const where = event ? [event.name, event.area].filter(Boolean).map(escapeHtml).join(" · ") : "";
+      const details = [
+        `№ ${escapeHtml(device.serial_number)}`,
+        since ? `з ${formatDate(since)}` : "",
+        where || (event ? "" : "без події в журналі")
+      ].filter(Boolean).join(" · ");
+      const count = since
+        ? `<b>${days}</b><small>${plural(days, "день", "дні", "днів")}</small>`
+        : "<b>?</b><small>днів</small>";
+      return `<li class="repair-item${late ? " is-overdue" : ""}" title="${escapeHtml(device.name)} — ${since ? daysLabel(days) : "дата невідома"} у ремонті">
+        <span class="repair-count">${count}</span>
+        <span class="repair-main">
+          <a class="repair-name" href="./assets.html?device=${encodeURIComponent(device.id)}">${escapeHtml(device.name)}</a>
+          <span class="repair-sub">${details}</span>
+        </span>
+        ${can("create") ? `<button class="ghost-button repair-return" type="button" data-return="${device.id}" title="Засіб повернувся: подія «Повернення з ремонту», стан — склад роти">Повернуто</button>` : ""}
+      </li>`;
+    })
+    .join("");
+}
+
 function render() {
+  renderRepairs();
   renderSummary();
   renderRecords();
 }
@@ -260,6 +293,13 @@ $("recordsBody").addEventListener("click", (event) => {
   if (edit) openEventForm({ record: state.records.find((item) => item.id === edit), saved });
   if (history) openHistory(history);
   if (remove) deleteRecord(remove);
+});
+
+$("repairList").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-return]");
+  if (!button) return;
+  const device = state.equipment.find((item) => item.id === button.dataset.return);
+  if (device) openEventForm({ device, action: "returned", saved });
 });
 
 $("newEventButton").addEventListener("click", () => openEventForm({ saved }));

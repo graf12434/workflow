@@ -80,6 +80,7 @@ export const ACTIONS = {
   recover: "Згортання",
   relocate: "Переміщення",
   repair: "Ремонт",
+  returned: "Повернення з ремонту",
   maintenance: "Обслуговування",
   destroyed: "Знищено"
 };
@@ -90,6 +91,7 @@ export const ACTION_TO_STATUS = {
   recover: "company_storage",
   relocate: "in_formation",
   repair: "repair",
+  returned: "company_storage",
   destroyed: "destroyed"
 };
 
@@ -217,6 +219,34 @@ export function deviceRecords(device, records = state.records) {
   return records
     .filter((record) => record.asset === device.name && norm(record.serial_number) === norm(device.serial_number))
     .sort((a, b) => `${b.date} ${b.created_at}`.localeCompare(`${a.date} ${a.created_at}`));
+}
+
+/* ---------- Засоби в ремонті ---------- */
+
+// Після стількох днів у ремонті засіб виділяється як "давно в ремонті"
+export const REPAIR_OVERDUE_DAYS = 14;
+
+const DAY_MS = 86400000;
+
+// Засоби у стані "Ремонт": з якої дати, скільки днів, звідки забрали. Дата — остання подія
+// "Ремонт" у журналі; якщо її немає (стан змінили вручну) — дата останньої зміни картки.
+export function repairWatch() {
+  const today = parseDate(todayISO());
+  return state.equipment
+    .filter((device) => device.status === "repair")
+    .map((device) => {
+      const event = deviceRecords(device).find((record) => record.action_type === "repair") || null;
+      const since = event?.date || (device.updated_at || device.created_at || "").slice(0, 10) || null;
+      const days = since ? Math.max(0, Math.round((today - parseDate(since)) / DAY_MS)) : null;
+      return { device, event, since, days, overdue: days === null || days >= REPAIR_OVERDUE_DAYS };
+    })
+    .sort((a, b) => (b.days ?? Infinity) - (a.days ?? Infinity));
+}
+
+export function daysLabel(days) {
+  if (days === null) return "невідомо";
+  if (days === 0) return "сьогодні";
+  return `${days} ${plural(days, "день", "дні", "днів")}`;
 }
 
 // Засоби, чия остання дія — розгортання чи переміщення, тобто ті, що зараз на позиціях

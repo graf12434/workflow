@@ -4,7 +4,7 @@ import {
   db, state, $, can, initPage, load, applyPermissions, escapeHtml, formatDate, plural, icon,
   setMessage, VARIANTS, CATEGORIES, RANGES, MODES, CURTAIN_LOCK, STATUSES, STATUS_LABELS, OWNERSHIP,
   hasCategories, subtypeLabel, deviceRecords, actionPill, statusPill, openLayerEl, closeLayer,
-  duplicateDevice, isUniqueViolation
+  duplicateDevice, isUniqueViolation, repairWatch, daysLabel
 } from "./core.js";
 import { openEventForm } from "./event-form.js";
 
@@ -140,18 +140,20 @@ function openCard(id) {
   view.deviceId = id;
   const events = deviceRecords(device);
   const subtype = subtypeLabel(device);
+  const repair = device.status === "repair" ? repairWatch().find((item) => item.device.id === device.id) : null;
 
   $("deviceTitle").textContent = device.name;
   $("deviceCard").innerHTML = `
     <dl class="facts">
       <div><dt>Серійний №</dt><dd class="cell-id">${escapeHtml(device.serial_number)}</dd></div>
-      <div><dt>Стан</dt><dd>${statusPill(device.status)}</dd></div>
+      <div><dt>Стан</dt><dd>${statusPill(device.status)}${repair ? ` <span class="repair-days${repair.overdue ? " is-overdue" : ""}">${daysLabel(repair.days)}${repair.since ? `, з ${formatDate(repair.since)}` : ""}</span>` : ""}</dd></div>
       <div><dt>Тип</dt><dd>${escapeHtml(device.variant)}${subtype ? ` · ${escapeHtml(subtype)}` : ""}</dd></div>
       <div><dt>Належність</dt><dd>${escapeHtml(OWNERSHIP[device.ownership] || device.ownership)}</dd></div>
       ${device.note ? `<div class="facts-wide"><dt>Примітка</dt><dd>${escapeHtml(device.note)}</dd></div>` : ""}
     </dl>
     <div class="card-actions">
-      <button class="primary-button" type="button" data-card="event" data-can="create">Нова подія</button>
+      ${repair ? '<button class="primary-button" type="button" data-card="returned" data-can="create">Повернуто з ремонту</button>' : ""}
+      <button class="${repair ? "ghost-button" : "primary-button"}" type="button" data-card="event" data-can="create">Нова подія</button>
       <button class="ghost-button" type="button" data-card="edit" data-can="edit">Редагувати</button>
       <button class="ghost-button danger-text" type="button" data-card="delete" data-can="delete">Видалити</button>
     </div>
@@ -184,9 +186,10 @@ $("deviceCard").addEventListener("click", async (event) => {
   const device = state.equipment.find((item) => item.id === view.deviceId);
   if (!action || !device) return;
 
-  if (action === "event") {
+  if (action === "event" || action === "returned") {
     openEventForm({
       device,
+      action: action === "returned" ? "returned" : "",
       saved: (text) => {
         setMessage($("pageMessage"), text);
         render();

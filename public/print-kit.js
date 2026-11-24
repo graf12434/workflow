@@ -79,6 +79,7 @@
     .status-repair, .action-recover { color: #b45309; background: #fef3c7; }
     .status-destroyed, .action-destroyed { color: #b91c1c; background: #fee2e2; }
     .action-maintenance { color: #6d28d9; background: #ede9fe; }
+    .action-returned { color: #166534; background: #dcfce7; }
     @media print {
       body { padding: 0; }
       @page { size: A4 landscape; margin: 12mm; }

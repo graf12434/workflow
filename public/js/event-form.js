@@ -115,7 +115,9 @@ function renderDeviceHint() {
   if (matches.length === 1) {
     const device = matches[0];
     const subtype = subtypeLabel(device);
-    hint.innerHTML = `На обліку: ${statusPill(device.status)} <span>${escapeHtml(device.variant)}${subtype ? ` · ${escapeHtml(subtype)}` : ""}</span>`;
+    const notInRepair = fields.action.value === "returned" && device.status !== "repair";
+    hint.classList.toggle("is-warning", notInRepair);
+    hint.innerHTML = `На обліку: ${statusPill(device.status)} <span>${escapeHtml(device.variant)}${subtype ? ` · ${escapeHtml(subtype)}` : ""}</span>${notInRepair ? "<span>— засіб не в ремонті</span>" : ""}`;
     return device;
   }
 
@@ -136,6 +138,8 @@ function prefillFromHistory(device) {
   if (!fields.name.value.trim()) fields.name.value = last.name || "";
   if (!fields.area.value && last.area) renderAreaOptions(last.area);
 }
+
+fields.action.addEventListener("change", renderDeviceHint);
 
 fields.asset.addEventListener("change", () => {
   renderSerialHints();
@@ -241,7 +245,7 @@ form.addEventListener("submit", async (event) => {
 });
 
 // record — редагування наявного запису; device — нова подія для конкретного засобу
-export function openEventForm({ record = null, device = null, saved = () => {} } = {}) {
+export function openEventForm({ record = null, device = null, action = "", saved = () => {} } = {}) {
   onSaved = saved;
   form.reset();
   setMessage($("eventMessage"), "");
@@ -250,7 +254,7 @@ export function openEventForm({ record = null, device = null, saved = () => {} }
 
   fields.id.value = record?.id || "";
   fields.date.value = record?.date || todayISO();
-  fields.action.value = record?.action_type || "deploy";
+  fields.action.value = record?.action_type || action || "deploy";
   renderAssetOptions(record?.asset || device?.name || "");
   renderAreaOptions(record?.area || "");
   fields.serial.value = record?.serial_number || device?.serial_number || "";
