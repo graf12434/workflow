@@ -2848,11 +2848,46 @@ body.is-guest .brand {
   line-height: 1;
 }
 
-[data-theme="machinarium"] .col-actions,
-[data-theme="machinarium"] th.col-actions {
+[data-theme="machinarium"] td.col-actions {
   background: var(--field-bg);
 }
 
 [data-theme="machinarium"] tbody tr:hover td.col-actions {
   background: color-mix(in srgb, var(--text) 4%, var(--field-bg));
+}
+
+/* ---------- Журнал: колонки завжди закінчуються на одному рівні ---------- */
+/* Висота таблиці не залежить від кількості рядків (лише мінімум), тож висоту ряду задає
+   вища з колонок; таблиця або права колонка розтягуються до неї */
+.journal-grid {
+  align-items: stretch;
+}
+
+.journal-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-journal {
+  flex: 1 1 0;
+  min-height: max(360px, calc(100vh - 420px));
+  max-height: none;
+}
+
+.journal-rail {
+  display: flex;
+  flex-direction: column;
+  position: static;
+}
+
+.journal-rail > .rail-card:last-child {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+@media (max-width: 1180px) {
+  .journal-rail {
+    display: grid;
+  }
 }
