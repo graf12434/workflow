@@ -2891,3 +2891,49 @@ body.is-guest .brand {
     display: grid;
   }
 }
+
+
+/* ---------- Машинаріум: місто внизу екрана, шви стіни, лампа зв'язку ---------- */
+/* Місто — два файли: статична панорама й легкий "живий" шар (дим, вогники, дирижабль,
+   шестерні). Стоїть позаду всього вмісту; панелі лежать поверх */
+:root[data-theme="machinarium"] body {
+  background-image: var(--tex-wall), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='240'%3E%3Cpath d='M319 0V240M0 239H320' stroke='%234a3622' stroke-opacity='.22' stroke-width='2'/%3E%3Cpath d='M320 0V240M0 240H320' stroke='%23f1e3c2' stroke-opacity='.18' stroke-width='1' transform='translate(-2 -2)'/%3E%3Cg fill='%235a4430' fill-opacity='.28'%3E%3Ccircle cx='317' cy='12' r='2.2'/%3E%3Ccircle cx='317' cy='36' r='2.2'/%3E%3Ccircle cx='317' cy='60' r='2.2'/%3E%3Ccircle cx='317' cy='84' r='2.2'/%3E%3Ccircle cx='317' cy='108' r='2.2'/%3E%3Ccircle cx='317' cy='132' r='2.2'/%3E%3Ccircle cx='317' cy='156' r='2.2'/%3E%3Ccircle cx='317' cy='180' r='2.2'/%3E%3Ccircle cx='317' cy='204' r='2.2'/%3E%3Ccircle cx='317' cy='228' r='2.2'/%3E%3Ccircle cx='12' cy='237' r='2.2'/%3E%3Ccircle cx='36' cy='237' r='2.2'/%3E%3Ccircle cx='60' cy='237' r='2.2'/%3E%3Ccircle cx='84' cy='237' r='2.2'/%3E%3Ccircle cx='108' cy='237' r='2.2'/%3E%3Ccircle cx='132' cy='237' r='2.2'/%3E%3Ccircle cx='156' cy='237' r='2.2'/%3E%3Ccircle cx='180' cy='237' r='2.2'/%3E%3Ccircle cx='204' cy='237' r='2.2'/%3E%3Ccircle cx='228' cy='237' r='2.2'/%3E%3Ccircle cx='252' cy='237' r='2.2'/%3E%3Ccircle cx='276' cy='237' r='2.2'/%3E%3Ccircle cx='300' cy='237' r='2.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+:root[data-theme="machinarium"] body::before {
+  content: "";
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  height: clamp(240px, 46vh, 560px);
+  background:
+    url("./mach-life.svg?v=20261125-3") center bottom / cover no-repeat,
+    url("./mach-city.svg?v=20261125-3") center bottom / cover no-repeat;
+  pointer-events: none;
+}
+
+[data-theme="machinarium"] .status-dot.online::before {
+  width: 9px;
+  height: 9px;
+  background: #ffcf5a;
+  box-shadow: 0 0 6px 2px rgba(255, 190, 70, 0.75);
+  animation: mach-lamp 3s ease-in-out infinite;
+}
+
+@keyframes mach-lamp {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; box-shadow: 0 0 2px 1px rgba(255, 190, 70, 0.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="machinarium"] .status-dot.online::before {
+    animation: none;
+  }
+}
+
+/* Під вмістом — місце для міста: сторінка закінчується видом на нього */
+[data-theme="machinarium"] .app-shell {
+  padding-bottom: clamp(180px, 34vh, 400px);
+}
